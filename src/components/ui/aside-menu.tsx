@@ -6,15 +6,14 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 
-type Props = {}
 
 const routes = [
-    { route: "/", label: "Product" },
+    { route: "/", label: "Dashboard" },
     { route: "/category", label: "Category" },
-    { route: "/variant-product", label: "Product variant" },
-    { route: "#", label: "Product image variant" },
+    { route: "/product", label: "Product" },
+    { route: "/product-option", label: "Product Option" },
 ]
-const AsideMenu = (props: Props) => {
+const AsideMenu = () => {
     const pathname = usePathname()
     return (
         <aside className="border border-dashed border-r border-l  fixed top-14 z-30 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block pt-10">

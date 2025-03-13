@@ -42,3 +42,8 @@ interface Product {
     options: Option[]
     variants: Variant[];
 }
+
+interface Category {
+    id:number;
+    name:string;
+}

@@ -21,8 +21,10 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   const session = await getSession();
 
@@ -42,6 +44,7 @@ export default async function RootLayout({
             <AsideMenu />
             <main className="relative py-6 lg:gap-10 lg:py-8  ">
               {children}
+              {modal}
               <DialogProvider />
             </main>
 
