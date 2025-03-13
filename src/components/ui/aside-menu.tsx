@@ -22,7 +22,7 @@ const AsideMenu = (props: Props) => {
                 <EachElement
                     of={routes}
                     render={(item, index) => (
-                        <Link className={cn("hover:bg-gray-300 cursor-pointer transition-all duration-300 border border-dashed px-5 py-3 rounded-l-xl ", pathname === item.route && "bg-gray-300")} href={item.route} key={index} >{item.label}</Link>
+                        <Link className={cn("hover:bg-gray-600 cursor-pointer transition-all duration-300 border border-dashed px-5 py-3 rounded-l-xl ", pathname === item.route && "border-solid border-b-4 border-b-gray-300")} href={item.route} key={index} >{item.label}</Link>
                     )}
                 />
             </ul>
