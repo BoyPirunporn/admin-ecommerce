@@ -1,14 +1,34 @@
-interface Variant {
+interface BaseResponse {
+    status: number;
+}
+
+interface ResponseMessage extends BaseResponse {
+    message: string;
+}
+
+interface ResponseWithPayload<T> extends BaseResponse {
+    payload: T
+}
+
+
+interface ProductVariant {
     id: number;
     sku: string;
     price: number;
     stock: number;
-    selectedOptions: VariantSelectOption[];
-    images: {
-        url: string
-    }[]
+    variantImage: VariantImage;
+    productVariantOptions: ProductVariantOption[]
+
 }
 
+interface ProductVariantOption {
+    id: number;
+    productOptionValue: ProductOptionValue
+}
+interface VariantImage {
+    id: number;
+    url: string;
+}
 interface VariantSelectOption {
     optionId: number;
     choiceValue: string;
@@ -37,13 +57,22 @@ interface Product {
     name: string;
     price: number;
     description: string;
-    currency: 'USD' | 'THB'
+    category: string;
     mainImage: string;
-    options: Option[]
-    variants: Variant[];
+    productVariants: ProductVariant[]
 }
 
 interface Category {
-    id:number;
-    name:string;
+    id: number;
+    name: string;
+}
+
+interface ProductOption {
+    id: number;
+    name: string;
+    productOptionValues: ProductOptionValue[]
+}
+interface ProductOptionValue {
+    id: number;
+    value: string;
 }

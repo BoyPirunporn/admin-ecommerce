@@ -106,6 +106,7 @@ const DataTable = <T,>({
                                                         width: `${header.getSize()}px`,
                                                         maxWidth: `${header.getSize()}px`,
                                                         minWidth: `${header.getSize()}px`,
+                                                        
 
                                                     }} >
                                                         {header.isPlaceholder ? null : (

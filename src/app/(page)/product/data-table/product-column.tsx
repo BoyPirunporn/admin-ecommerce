@@ -35,7 +35,7 @@ export const productColumnDef: ColumnDef<Product>[] = [
     header: "Product Name",
   },
   {
-    accessorKey: "image",
+    accessorKey: "mainImage",
     header: "Product Image",
   },
   {
@@ -43,16 +43,16 @@ export const productColumnDef: ColumnDef<Product>[] = [
     header: "Product Price",
   },
   {
-    accessorKey: "variant",
+    accessorKey: "productVariants",
     header: "Product Variant",
-    // cell: (props) => {
-    //   return <p>{(props.getValue() as Variant[]).map(e => e.key).join(", ")}</p>
-    // }
+    cell: (props) => {
+      return <p>{(props.getValue() as ProductVariant[]).map(e => e.sku).join(", ")}</p>
+    }
   },
   {
-    accessorKey:"id",
-    header:"Action",
-    cell:(props) => {
+    accessorKey: "id",
+    header: "Action",
+    cell: (props) => {
       return <Button><Link href={`/product/${props.getValue()}`}>Edit</Link></Button>
     }
   }

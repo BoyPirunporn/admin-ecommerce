@@ -1,11 +1,12 @@
 import React from 'react'
 import ProductClient from './components/ProductClient'
 import { products } from '@/lib/utils'
+import { getAllProduct } from '@/server/product'
 
-type Props = {}
 
 const RootPage = async () => {
-    return <ProductClient products={products} />
+    const result = await getAllProduct(0, 10);
+    return <ProductClient products={result} />
 }
 
 export default RootPage

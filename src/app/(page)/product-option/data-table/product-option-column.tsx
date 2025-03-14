@@ -7,13 +7,9 @@ import { Button } from "@/components/ui/button";
 
 
 
-export const categoryColumnDef: ColumnDef<{
-  id: number;
-  name: string;
-}>[] = [
+export const productOptionColumnDef: ColumnDef<ProductOption>[] = [
     {
       id: "select",
-      size:20,
       header: ({ table }) => (
         <Checkbox
           checked={
@@ -36,15 +32,17 @@ export const categoryColumnDef: ColumnDef<{
     },
     {
       accessorKey: "name",
-      header: "Category Name",
-      size:200
+      header: "Option name",
+    },
+    {
+      accessorKey: "productOptionValue",
+      header: "Option value",
     },
     {
       accessorKey: "id",
       header: "Action",
-      size:1,
       cell: (props) => {
-        return <Button asChild><Link href={`/product/${props.getValue()}`} className="text-center items-center flex ">Edit</Link></Button>
+        return <Button><Link href={`/product-option/${props.getValue()}`}>Edit</Link></Button>
       }
     }
   ];

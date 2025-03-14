@@ -6,9 +6,13 @@ import Link from 'next/link';
 import React from 'react'
 import { categoryColumnDef } from '../data-table/category-column';
 
-type Props = {}
+type Props = {
+    categories: Category[]
+}
 
-const CategoryClient = (props: Props) => {
+const CategoryClient = ({
+    categories
+}: Props) => {
     return (
         <div className=''>
             <HeaderTitle title='Category management' rightAction={(
@@ -16,7 +20,7 @@ const CategoryClient = (props: Props) => {
                     <Link href={'/category/create'}>Add category</Link>
                 </Button>
             )} />
-            <DataTable data={[]} columnsDef={categoryColumnDef} sortInputBy={"name"} />
+            <DataTable data={categories} columnsDef={categoryColumnDef} sortInputBy={"name"} />
         </div>
     )
 }

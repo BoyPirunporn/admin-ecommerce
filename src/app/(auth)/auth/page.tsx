@@ -1,0 +1,16 @@
+import React from 'react'
+import AuthFormComponent from '../components/AuthFormComponent'
+
+type Props = {}
+
+const SignInPage = (props: Props) => {
+    return (
+        <div className="flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10">
+            <div className="w-full max-w-sm md:max-w-3xl">
+                <AuthFormComponent />
+            </div>
+        </div>
+    )
+}
+
+export default SignInPage

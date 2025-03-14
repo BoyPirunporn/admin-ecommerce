@@ -1,11 +1,12 @@
 import React from 'react'
 import ProductOptionClient from './components/ProductOptionClient'
+import { getAllProductOption } from '@/server/product-option'
 
-type Props = {}
 
-const ProductOptionPage = (props: Props) => {
+const ProductOptionPage = async () => {
+    const result = await getAllProductOption();
     return (
-        <ProductOptionClient />
+        <ProductOptionClient productOption={result}/>
     )
 }
 
