@@ -1,48 +1,47 @@
-'use client'
-import FormFileUpload from '@/components/form-file-upload'
-import { Button } from '@/components/ui/button'
-import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import { FormFieldCommon } from '@/components/ui/form-field-common'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import EachElement from '@/lib/EachElement'
-import { useStoreProductOption } from '@/stores/store-option'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import React from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+'use client';
+import FormFileUpload from '@/components/form-file-upload';
+import { Button } from '@/components/ui/button';
+import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { FormFieldCommon } from '@/components/ui/form-field-common';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import EachElement from '@/lib/EachElement';
+import { useStoreProductOption } from '@/stores/store-option';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 type Props = {
     productVariant: ProductVariant | null;
     onCallback: (data: ProductVariant) => void;
-}
+};
 
 const variantImageZod = z.object({
     id: z.number().nullable(),
     url: z.union([z.string(), z.instanceof(File)])
-})
+});
 
-const variantOption = z.object({
+export const variantOption = z.object({
     id: z.number().nullable().optional(),
     productOptionValue: z.object({
         id: z.number().transform(e => Number(e)),
         value: z.string().nullable().optional()
     })
-})
-const productVariantZod = z.object({
+});
+export const productVariantZod = z.object({
     id: z.number().nullable(),
-    price: z.number().default(0),
+    price: z.number().default(0).transform(v => Number(v)),
     sku: z.string().min(1),
-    stock: z.number().default(0),
+    stock: z.number().default(0).transform(v => Number(v)),
     variantImage: variantImageZod,
     productVariantOptions: z.array(variantOption)
 });
 
-type ProductVariantZod = z.infer<typeof productVariantZod>;
+export type ProductVariantZod = z.infer<typeof productVariantZod>;
 
 const ProductVariantForm = (props: Props) => {
-    const route = useRouter();
     const { productOptions } = useStoreProductOption();
     const form = useForm<ProductVariantZod>({
         resolver: zodResolver(productVariantZod),
@@ -59,10 +58,12 @@ const ProductVariantForm = (props: Props) => {
         }
     });
 
-    console.log(form.formState.errors)
+    console.log(form.formState.errors);
     const onSubmit = (data: ProductVariantZod) => {
-        props.onCallback(data as ProductVariant)
-    }
+        props.onCallback(data as ProductVariant);
+    };
+
+   
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-8'>
@@ -71,6 +72,7 @@ const ProductVariantForm = (props: Props) => {
                     name='price'
                     control={form.control}
                     placeholder='Price'
+                    type='number'
                 />
                 <FormFieldCommon
                     label='SKU'
@@ -83,6 +85,7 @@ const ProductVariantForm = (props: Props) => {
                     name='stock'
                     control={form.control}
                     placeholder='Stock'
+                    type='number'
                 />
 
                 <div className='flex flex-col mx-0 gap-4'>
@@ -95,7 +98,7 @@ const ProductVariantForm = (props: Props) => {
                                 <FormFileUpload
                                     value={field.value}
                                     onDelete={(id: string) => {
-                                        console.log("HANDLE")
+                                        console.log("HANDLE");
                                         field.onChange("");
                                     }}
                                     onChange={(e: File) => {
@@ -124,7 +127,15 @@ const ProductVariantForm = (props: Props) => {
                                                 return (
                                                     <FormItem>
                                                         <RadioGroup defaultValue={item.productOptionValues[0].id.toString()} onValueChange={(value) => {
-                                                            field.onChange(Number(value));
+                                                            const selectedOption = item.productOptionValues.find(v => v.id.toString() === value);
+                                                            if (selectedOption) {
+                                                                field.onChange(Number(value));
+                                                                form.setValue(`productVariantOptions.${index}.productOptionValue.value`, selectedOption.value, {
+                                                                    shouldValidate: true, // ✅ ให้ Form อัปเดต state
+                                                                    shouldDirty: true,
+                                                                    shouldTouch: true,
+                                                                });
+                                                            }
                                                         }}>
                                                             <div className="flex items-center space-x-5 flex-row">
                                                                 <EachElement
@@ -139,12 +150,17 @@ const ProductVariantForm = (props: Props) => {
                                                             </div>
                                                         </RadioGroup>
                                                     </FormItem>
-                                                )
+                                                );
                                             }}
                                         />
-
+                                        <FormFieldCommon
+                                            hidden
+                                            name={`productVariantOptions.${index}.productOptionValue.value`}
+                                            control={form.control}
+                                            defaultValue={item.productOptionValues[0].value}
+                                        />
                                     </div>
-                                )
+                                );
                             }}
                         />
                     </div>
@@ -153,7 +169,7 @@ const ProductVariantForm = (props: Props) => {
                 <Button className='ml-auto h-12' size={"lg"}>Submit</Button>
             </form>
         </Form>
-    )
-}
+    );
+};
 
-export default ProductVariantForm
+export default ProductVariantForm;

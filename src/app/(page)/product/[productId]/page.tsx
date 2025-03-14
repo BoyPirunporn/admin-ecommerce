@@ -1,6 +1,8 @@
 import { getAllProductOption } from '@/server/product-option';
 import ProductActionClient from './components/ProductActionClient';
 import { products } from '@/lib/utils';
+import { getAllCategory } from '@/server/category';
+import { getProductById } from '@/server/product';
 
 type Props = {
     params: Promise<{
@@ -13,9 +15,11 @@ const ProductAction = async ({
 }: Props) => {
     const productId = (await params).productId;
     const productOption = await getAllProductOption();
-    // const product = (productId === "create" || productId === "update") ? undefined : products.find(p => p.id === Number(productId));
+    const categories = await getAllCategory();
+    const product = (productId === "create" || productId === "update") ? null : await getProductById(productId);
+
     return (
-        <ProductActionClient product={undefined} productOption={productOption} />
+        <ProductActionClient product={product} productOption={productOption} categories={categories} />
     )
 }
 

@@ -17,6 +17,11 @@ export const getAllCategory = async (): Promise<Category[]> => {
     }
 }
 export const createCategory = async (category: Category): Promise<string> => {
-    return "";
+    try {
+        const response = await axiosServer.post<ResponseMessage>(CATEGORY, category);
+        return response.data.message;
+    } catch (error) {
+       throw error;
+    }
 }
 export const deleteCategoryById = async (id: number) => { }

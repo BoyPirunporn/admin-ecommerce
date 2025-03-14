@@ -19,9 +19,9 @@ const AuthFormComponent = ({
                 <CardContent className="">
                     <div className="relative w-full h-full">
                         <AnimatePresence mode="wait">
-                            <div className="grid p-0 md:grid-cols-2 relative">
+                            <div className="grid p-0 md:grid-cols-3 relative">
                                 {/* Form Section */}
-                                <div className={`relative w-full ${form === "login" ? 'order-1' : 'order-2'}`}>
+                                <div className={`relative col-span-2 w-full ${form === "login" ? 'order-1' : 'order-2'}`}>
                                     {form === "login" ? (
                                         <motion.div
                                             key="login"

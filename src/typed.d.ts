@@ -27,7 +27,7 @@ interface ProductVariantOption {
 }
 interface VariantImage {
     id: number;
-    url: string;
+    url: string | File;
 }
 interface VariantSelectOption {
     optionId: number;

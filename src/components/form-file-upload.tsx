@@ -41,7 +41,7 @@ const FormFileUpload: React.FC<FileUploadProps> = ({
     };
 
     const deleteImage = (id: string) => {
-        onDelete?.(id)
+        onDelete?.(id);
     };
 
     if (typeof window !== "undefined" && value instanceof File) {
@@ -64,12 +64,13 @@ const FormFileUpload: React.FC<FileUploadProps> = ({
                     </Button>
                 </div>
             </div>
-        )
+        );
     } else if (value.toString().length) {
+        let url = process.env.NEXT_PUBLIC_DOMAIN_IMAGE + "/" + value;
         return (
             <div className="relative w-[224px] h-[224px] flex flex-row justify-start gap-2">
                 <Image
-                    src={value as string}
+                    src={url}
                     fill
                     className='object-cover'
                     alt={''} />
@@ -85,7 +86,7 @@ const FormFileUpload: React.FC<FileUploadProps> = ({
                     </Button>
                 </div>
             </div>
-        )
+        );
     }
     return (
         <div className="flex h-[248px] w-[280px] gap-1 border border-gray-300 rounded-lg border-dashed ">

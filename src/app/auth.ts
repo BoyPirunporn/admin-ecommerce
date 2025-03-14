@@ -38,9 +38,11 @@ const authOptions: AuthOptions = ({
             }
             if (Date.now() / 1000 < Number(parseJwt(token.accessToken!).exp)) {
                 return token;
+            }else if(Date.now() / 1000 < Number(parseJwt(token.refreshToken!).exp)){
+                return await refreshToken(token);
             }
             // accesstoken expired
-            return await refreshToken(token);
+            return null;
         }
     },
     session: {

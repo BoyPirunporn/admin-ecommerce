@@ -2,10 +2,12 @@
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { FormFieldCommon } from '@/components/ui/form-field-common'
+import { createProductOption } from '@/server/product-option';
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
 import React from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
+import { toast } from 'sonner';
 import { z } from 'zod'
 
 
@@ -40,8 +42,15 @@ const ProductOptionForm = ({
     }
   });
 
-  const onSubmit = (data: ProductOptionZod) => {
-    console.log(data)
+  const onSubmit = async (data: ProductOptionZod) => {
+    try {
+      const response = await createProductOption(data as ProductOption);
+      toast.success(response);
+      form.reset();
+      window.location.href = "/product-option";
+    } catch (error) {
+      toast.error((error as Error).message)
+    }
   }
 
   const { fields, append, remove } = useFieldArray({

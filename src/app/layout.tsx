@@ -6,6 +6,7 @@ import DialogProvider from "@/providers/dialog-provider";
 import AuthProvider from "@/providers/auth-provider";
 import { getSession } from "./auth";
 import AuthSessionProvider from "@/providers/auth-session-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -34,11 +35,10 @@ export default async function RootLayout({
       >
         <AuthProvider session={session}>
           <nav className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container p-3">
-              <img src="./favicon.ico" alt="" className="p-3" width={80} height={80} />
-            </div>
+            
           </nav>
           {children}
+          <Toaster/>
           <DialogProvider />
           <AuthSessionProvider />
         </AuthProvider>
