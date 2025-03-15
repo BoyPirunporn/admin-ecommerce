@@ -5,6 +5,7 @@ import { productColumnDef } from '../data-table/product-column'
 import HeaderTitle from '@/components/ui/header-title'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { Product } from '@/typed';
 
 type Props = {
     products: Product[]

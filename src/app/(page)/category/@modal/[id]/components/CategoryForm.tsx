@@ -11,6 +11,7 @@ import { FormFieldCommon } from '@/components/ui/form-field-common';
 import { Button } from '@/components/ui/button';
 import { createCategory } from '@/server/category';
 import { toast } from 'sonner';
+import { Category } from '@/typed';
 type Props = {
     category: Category | null;
 };

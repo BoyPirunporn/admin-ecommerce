@@ -4,6 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Product, ProductVariant } from "@/typed";
 
 
 

@@ -1,6 +1,7 @@
 'use server';
 import { PRODUCT } from "@/constants";
 import { axiosServer } from "@/lib/axios-server";
+import { Product, ResponseWithPayload } from "@/typed";
 import axios from "axios";
 
 

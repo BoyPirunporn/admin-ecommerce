@@ -18,6 +18,7 @@ import { createProduct, updateProduct } from '@/server/product';
 import { useFormState } from 'react-dom';
 import { useSearchParams } from 'next/navigation';
 import { AxiosError } from 'axios';
+import { Product, ProductOption, Category, ProductVariant } from '@/typed';
 
 
 

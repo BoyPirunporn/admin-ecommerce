@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { FormFieldCommon } from '@/components/ui/form-field-common'
 import { createProductOption } from '@/server/product-option';
+import { ProductOption } from '@/typed';
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
 import React from 'react'

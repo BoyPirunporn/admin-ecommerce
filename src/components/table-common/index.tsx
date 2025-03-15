@@ -6,7 +6,7 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table';
-import React from 'react';
+import EachElement from '@/lib/EachElement';
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -19,17 +19,7 @@ import {
     useReactTable,
     VisibilityState
 } from '@tanstack/react-table';
-import { Input } from '@/components/ui/input';
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { ChevronDownIcon, Plus } from 'lucide-react';
-import Link from 'next/link';
-import EachElement from '@/lib/EachElement';
+import React from 'react';
 // import FilterHeader from '../filter-header';
 
 interface IDataTable<T> {

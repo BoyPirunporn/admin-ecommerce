@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import EachElement from '@/lib/EachElement';
 import { useStoreProductOption } from '@/stores/store-option';
+import { ProductVariant } from '@/typed';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import React from 'react';

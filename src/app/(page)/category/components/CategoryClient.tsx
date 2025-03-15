@@ -5,6 +5,7 @@ import HeaderTitle from '@/components/ui/header-title';
 import Link from 'next/link';
 import React from 'react'
 import { categoryColumnDef } from '../data-table/category-column';
+import { Category } from '@/typed';
 
 type Props = {
     categories: Category[]

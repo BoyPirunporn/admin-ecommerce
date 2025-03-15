@@ -5,6 +5,7 @@ import HeaderTitle from '@/components/ui/header-title'
 import Link from 'next/link'
 import React from 'react'
 import { productOptionColumnDef } from '../data-table/product-option-column'
+import { ProductOption } from '@/typed';
 
 type Props = {}
 

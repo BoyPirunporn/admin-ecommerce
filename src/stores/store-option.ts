@@ -1,3 +1,4 @@
+import { ProductOption } from "@/typed";
 import { create } from "zustand";
 
 interface StoreProductOption {

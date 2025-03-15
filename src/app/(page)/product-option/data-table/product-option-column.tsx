@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ProductOption } from "@/typed";
 
 
 

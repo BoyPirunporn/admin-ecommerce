@@ -1,3 +1,5 @@
+import { OrderStatus, PaymentMethod, PayStatus } from "@/enum";
+
 interface BaseResponse {
     status: number;
 }
@@ -7,7 +9,7 @@ interface ResponseMessage extends BaseResponse {
 }
 
 interface ResponseWithPayload<T> extends BaseResponse {
-    payload: T
+    payload: T;
 }
 
 
@@ -17,13 +19,13 @@ interface ProductVariant {
     price: number;
     stock: number;
     variantImage: VariantImage;
-    productVariantOptions: ProductVariantOption[]
+    productVariantOptions: ProductVariantOption[];
 
 }
 
 interface ProductVariantOption {
     id: number;
-    productOptionValue: ProductOptionValue
+    productOptionValue: ProductOptionValue;
 }
 interface VariantImage {
     id: number;
@@ -48,7 +50,7 @@ interface OptionChoice {
 interface Option {
     id: number;
     name: string;
-    choices: OptionChoice[]
+    choices: OptionChoice[];
 }
 
 
@@ -59,7 +61,7 @@ interface Product {
     description: string;
     category: string;
     mainImage: string;
-    productVariants: ProductVariant[]
+    productVariants: ProductVariant[];
 }
 
 interface Category {
@@ -70,9 +72,52 @@ interface Category {
 interface ProductOption {
     id: number;
     name: string;
-    productOptionValues: ProductOptionValue[]
+    productOptionValues: ProductOptionValue[];
 }
 interface ProductOptionValue {
     id: number;
     value: string;
+}
+
+interface Order {
+    id: number;
+    totalAmount: number;
+    discount: number;
+    orderData: Date;
+    orderItems: OrderItem[];
+    payment: Payment;
+    status:OrderStatus;
+    shippingAddress:ShippingAddress;
+    createdAt: Date;
+    updatedAt: Date;
+    
+}
+
+interface OrderItem {
+    id: number;
+    productVariant: ProductVariant;
+    quantity: number;
+    unitPrice: number;
+    totalPrice: number;
+    createdAt: Date;
+    updatedAt: Date;
+    
+}
+
+interface ShippingAddress {
+    recipientName:string;
+    phoneNumber:string;
+    addressLine1:string;
+    addressLine2:string;
+    city:string;
+    state:string;
+    postalCode:string;
+    country:string;
+}
+
+interface Payment {
+    id: number;
+    paymentDate: Date | null;
+    paymentMethod: PaymentMethod;
+    payStatus: PayStatus;
 }

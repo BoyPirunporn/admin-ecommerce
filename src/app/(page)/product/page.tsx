@@ -1,7 +1,5 @@
-import React from 'react'
-import ProductClient from './components/ProductClient'
-import { products } from '@/lib/utils'
-import { getAllProduct } from '@/server/product'
+import { getAllProduct } from '@/server/product';
+import ProductClient from './components/ProductClient';
 
 
 const RootPage = async () => {

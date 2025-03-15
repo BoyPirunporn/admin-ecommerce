@@ -39,6 +39,10 @@ const dataNav = {
           title: "Product option",
           url: "/product-option",
         },
+        {
+          title: "Order",
+          url: "/order",
+        },
       ],
     },
   ],

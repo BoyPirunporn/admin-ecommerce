@@ -1,8 +1,7 @@
-import { getAllProductOption } from '@/server/product-option';
-import ProductActionClient from './components/ProductActionClient';
-import { products } from '@/lib/utils';
 import { getAllCategory } from '@/server/category';
 import { getProductById } from '@/server/product';
+import { getAllProductOption } from '@/server/product-option';
+import ProductActionClient from './components/ProductActionClient';
 
 type Props = {
     params: Promise<{
