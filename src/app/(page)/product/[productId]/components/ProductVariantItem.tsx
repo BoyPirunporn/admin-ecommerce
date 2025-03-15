@@ -10,7 +10,6 @@ const ProductVariantItem = ({
     url:string | File
 }) => {
     let urlImage = url instanceof File ? URL.createObjectURL(url) : `${process.env.NEXT_PUBLIC_DOMAIN_IMAGE}/${url}`;
-    console.log({urlImage})
     return (
         <Accordion type="single" collapsible className="w-full  border border-gray-300 px-2 rounded-sm">
             <AccordionItem value={sku} >

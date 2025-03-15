@@ -58,7 +58,6 @@ const ProductVariantForm = (props: Props) => {
         }
     });
 
-    console.log(form.formState.errors);
     const onSubmit = (data: ProductVariantZod) => {
         props.onCallback(data as ProductVariant);
     };

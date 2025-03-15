@@ -33,22 +33,27 @@ export const productColumnDef: ColumnDef<Product>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
-    header: "Product Name",
-  },
-  {
     accessorKey: "mainImage",
     header: "Product Image",
     cell: ({ row }) => {
       const url = `${process.env.NEXT_PUBLIC_DOMAIN_IMAGE!}/${row.getValue("mainImage")}`;
       console.log(url);
       return (
-        <div className="relative w-24 h-24">
+        <div className="relative w-18 h-18">
           <Image src={url} fill alt="" className="object-fill rounded-sm" />
         </div>
       );
     }
   },
+  {
+    accessorKey: "name",
+    header: "Product Name",
+  },
+  {
+    accessorKey:"category",
+    header: "Category"
+  },
+ 
   {
     accessorKey: "price",
     header: "Product Price",
@@ -64,7 +69,7 @@ export const productColumnDef: ColumnDef<Product>[] = [
     accessorKey: "id",
     header: "Action",
     cell: (props) => {
-      return <Button><Link href={`/product/${props.getValue()}`}>Edit</Link></Button>;
+      return <Button><Link href={`/product/${props.getValue()}?update=true`}>Edit</Link></Button>;
     }
   }
 ];

@@ -13,12 +13,11 @@ type Props = {
 const ProductClient = ({
     products
 }: Props) => {
-    console.log(products);
     return (
         <div className=''>
             <HeaderTitle title='Product management' rightAction={(
                 <Button asChild>
-                    <Link href={'/product/create'}>add product</Link>
+                    <Link href={'/product/create?create=true'}>add product</Link>
                 </Button>
             )} />
             <DataTable data={products} columnsDef={productColumnDef} sortInputBy={"name"} />

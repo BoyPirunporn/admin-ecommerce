@@ -14,11 +14,15 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import ProductVariantForm, { productVariantZod } from './ProductVariantForm';
 import ProductVariantItem from './ProductVariantItem';
-import { createProduct } from '@/server/product';
+import { createProduct, updateProduct } from '@/server/product';
+import { useFormState } from 'react-dom';
+import { useSearchParams } from 'next/navigation';
+import { AxiosError } from 'axios';
 
 
 
 export const productScheme = z.object({
+    id:z.number().nullable(),
     name: z.string().min(6),
     category: z.string().min(1),
     price: z.number().default(0),
@@ -52,13 +56,14 @@ const ProductActionClient = ({
 
     const storeModal = useStoreModal();
     const storeProductOption = useStoreProductOption();
-
+    const searchParam = useSearchParams();
     useEffect(() => {
         storeProductOption.setProductOption(productOption);
     }, []);
     const form = useForm<ProductScheme>({
         resolver: zodResolver(productScheme),
         defaultValues: product ? { ...product } : {
+            id:null,
             name: "",
             price: 0,
             category: "",
@@ -73,38 +78,53 @@ const ProductActionClient = ({
         name: "productVariants"
     });
 
-
+    console.log(form.formState.errors)
 
     const onSubmit = async (data: ProductScheme) => {
         const formData = new FormData();
         try {
             data.productVariants.map((item, index) => {
+                if(item.id){
+                    formData.append(`productVariants[${index}].id`, item.id.toString());
+                }
                 formData.append(`productVariants[${index}].price`, item.price.toString());
                 formData.append(`productVariants[${index}].stock`, item.stock.toString());
                 formData.append(`productVariants[${index}].sku`, item.sku.toString());
-
-                // Check if the variantImage is an instance of File
-                if (item.variantImage.url instanceof File) {
-                    formData.append(`productVariants[${index}].variantImage.url`, item.variantImage.url);
+                if(item.variantImage.id){
+                    formData.append(`productVariants[${index}].variantImage.id`, item.variantImage.id.toString());
                 }
+                formData.append(`productVariants[${index}].variantImage.url`, item.variantImage.url);
 
                 // Loop through the productVariantOptions
                 item.productVariantOptions.map((c, i) => {
+                    if(c.id){
+                        formData.append(`productVariants[${index}].productVariantOptions[${i}].id`, c.id.toString());
+                    }
                     formData.append(`productVariants[${index}].productVariantOptions[${i}].productOptionValue.value`, c.productOptionValue.value!);
                     formData.append(`productVariants[${index}].productVariantOptions[${i}].productOptionValue.id`, c.productOptionValue.id.toString());
                 });
             });
+            if(product?.id){
+                formData.append("id", product.id.toString()!);
+            }
             formData.append("name", data.name);
             formData.append("category", data.category);
             formData.append("price", data.price.toString());
             formData.append("description", data.description!);
-            if (data.mainImage instanceof File) {
-                formData.append("mainImage", data.mainImage);
+            formData.append("mainImage", data.mainImage);
+
+            console.log("PRODUCT ID",formData.get("id"))
+            console.log("PRODUCT VARIANT ID",formData.get("productVariants[0].id"))
+            console.log(" VARIANT IMAGE ID",formData.get("productVariants[0].variantImage.id"))
+            console.log(" PRODUCT VARIANT OPTION ID",formData.get("productVariants[0].productVariantOptions[0].id"))
+            console.log(" PRODUCT OPTION ID",formData.get("productVariants[0].productVariantOptions[0].productOptionValue.id"))
+            if (product !== null && searchParam.get("update") === "true") {
+                await updateProduct(formData);
+            } else {
+                const response = await createProduct(formData);
+                console.log(response);
             }
 
-
-            const response = await createProduct(formData);
-            console.log(response);
         } catch (error) {
             console.log(error);
         }
@@ -120,6 +140,8 @@ const ProductActionClient = ({
             content: <ProductVariantForm productVariant={null} onCallback={onHandleCallbackVariant} />
         });
     };
+
+
     return (
         <div>
             <Form {...form}>
@@ -139,7 +161,7 @@ const ProductActionClient = ({
                                     name='category'
                                     render={({ field }) => {
                                         return (
-                                            <Select onValueChange={field.onChange}>
+                                            <Select defaultValue={field.value} onValueChange={field.onChange}>
                                                 <SelectTrigger className="w-full" >
                                                     <SelectValue placeholder="Select a fruit" />
                                                 </SelectTrigger>
