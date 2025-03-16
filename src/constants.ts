@@ -1,4 +1,4 @@
-export const PRODUCT_OPTION = "/api/v1/product-options";
-export const PRODUCT = "/api/v1/products";
-export const CATEGORY = "/api/v1/category";
-export const ORDER = "/api/v1/orders";
+export const PRODUCT_OPTION = "/product-options";
+export const PRODUCT = "/products";
+export const CATEGORY = "/category";
+export const ORDER = "/orders";
