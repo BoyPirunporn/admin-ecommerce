@@ -1,18 +1,19 @@
 'use client';
-import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { Form, FormMessage } from '@/components/ui/form';
 import { FormFieldCommon } from '@/components/ui/form-field-common';
+import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
-import Link from 'next/link'
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react'
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 type Props = {
-    switchForm: (form: string) => void
-}
+    switchForm: (form: string) => void;
+};
 
 const loginZod = z.object({
     email: z.string().email(),
@@ -23,6 +24,7 @@ type LoginZod = z.infer<typeof loginZod>;
 const LoginForm = ({
     switchForm
 }: Props) => {
+    const [error, setError] = useState<string | null>(null);
     const route = useRouter();
 
     const form = useForm<LoginZod>({
@@ -40,6 +42,7 @@ const LoginForm = ({
                 password: data.password,
                 redirect: false, // ยืนยันว่ามี redirect: false,
             });
+            console.log({ response });
             // ตรวจสอบว่าการยืนยันตัวตนสำเร็จหรือไม่
             if (response?.ok) {
                 // ตัวอย่าง: redirect ไปหน้าอื่นถ้าจำเป็น
@@ -47,12 +50,14 @@ const LoginForm = ({
             }
             // จัดการข้อผิดพลาดและแสดง toast อย่างเหมาะสม
             if (response?.error) {
-                console.log(response.error)
+                setError(response.error ?? "Internal Server Error");
+                console.log(response.error);
             }
         } catch (error) {
-            console.log(error)
+            setError("Internal Server Error");
+            console.log({ error });
         }
-    }
+    };
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -63,6 +68,14 @@ const LoginForm = ({
                             Login to your Acme Inc account
                         </p>
                     </div>
+                    {error && (
+                        <p
+                            data-slot="error-message"
+                            className={cn("text-destructive-foreground  rounded-sm bg-destructive-foreground/10 border-0  p-2.5 text-base")}
+                        >
+                            {error}
+                        </p>
+                    )}
                     <div className="grid gap-2">
                         <FormFieldCommon
                             label='Email'
@@ -106,7 +119,7 @@ const LoginForm = ({
                 </div>
             </form>
         </Form>
-    )
-}
+    );
+};
 
-export default LoginForm
+export default LoginForm;

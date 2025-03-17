@@ -1,4 +1,4 @@
-import { AuthOptions, getServerSession, User } from 'next-auth'
+import { AuthOptions, getServerSession, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 import { JWT } from 'next-auth/jwt';
@@ -38,7 +38,7 @@ const authOptions: AuthOptions = ({
             }
             if (Date.now() / 1000 < Number(parseJwt(token.accessToken!).exp)) {
                 return token;
-            }else if(Date.now() / 1000 < Number(parseJwt(token.refreshToken!).exp)){
+            } else if (Date.now() / 1000 < Number(parseJwt(token.refreshToken!).exp)) {
                 return await refreshToken(token);
             }
             // accesstoken expired
@@ -58,14 +58,13 @@ const authOptions: AuthOptions = ({
                 password: {}
             },
             authorize: async (credential, req) => {
-                console.log({ credential })
                 try {
                     const { data } = await axiosServer.post<{
                         payload: {
                             token: string;
                             refreshToken: string;
-                        }
-                    }>("/api/v1/auth/sign-in", {
+                        };
+                    }>("/auth/sign-in", {
                         email: credential?.email,
                         password: credential?.password
                     });
@@ -77,7 +76,13 @@ const authOptions: AuthOptions = ({
                         return null; // ผู้ใช้ไม่ถูกต้อง
                     }
                 } catch (error) {
-                    throw error;
+                    if (axios.isAxiosError(error)) {
+                        throw new Error(error.response?.data?.message || error.message || "Internal Server Error");
+                    } else {
+                        console.log({ errorException: error });
+                        throw error;
+                    }
+
                 }
             }
         })
@@ -113,17 +118,17 @@ export const getIsTokenValid = (token: string) => {
 };
 
 export const refreshToken = async (token: any) => {
-    console.log("REFRESH TOKEN")
+    console.log("REFRESH TOKEN");
     try {
         const { data } = await axios.post<{
             payload: {
                 token: string;
                 refreshToken: string;
-            }
-        }>(process.env.API_URL + "/api/v1/auth/refresh-token", {
+            };
+        }>(process.env.API_URL + "/auth/refresh-token", {
             refreshToken: token.refreshToken,
         });
-        console.log(data)
+        console.log(data);
         return {
             ...token,
             accessToken: data.payload.token,
@@ -139,4 +144,4 @@ export const refreshToken = async (token: any) => {
 
 const getSession = () => getServerSession(authOptions);
 
-export { authOptions, getSession }
+export { authOptions, getSession };

@@ -67,6 +67,9 @@ interface Product {
 interface Category {
     id: number;
     name: string;
+    imageUrl: string | File;
+    parentId: number | null;
+    children: Category[]
 }
 
 interface ProductOption {
@@ -86,11 +89,11 @@ interface Order {
     orderData: Date;
     orderItems: OrderItem[];
     payment: Payment;
-    status:OrderStatus;
-    shippingAddress:ShippingAddress;
+    status: OrderStatus;
+    shippingAddress: ShippingAddress;
     createdAt: Date;
     updatedAt: Date;
-    
+
 }
 
 interface OrderItem {
@@ -101,18 +104,18 @@ interface OrderItem {
     totalPrice: number;
     createdAt: Date;
     updatedAt: Date;
-    
+
 }
 
 interface ShippingAddress {
-    recipientName:string;
-    phoneNumber:string;
-    addressLine1:string;
-    addressLine2:string;
-    city:string;
-    state:string;
-    postalCode:string;
-    country:string;
+    recipientName: string;
+    phoneNumber: string;
+    addressLine1: string;
+    addressLine2: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
 }
 
 interface Payment {

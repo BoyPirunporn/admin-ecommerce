@@ -1,5 +1,7 @@
 import { getSession } from "@/app/auth";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
+const DEBUG = process.env.NODE_ENV === "development";
 
 export const axiosServer = axios.create({
   baseURL: process.env.API_URL,
@@ -20,7 +22,23 @@ axiosServer.interceptors.request.use(
     return config;
   },
   (error) => {
+    if (DEBUG) {
+      console.log({ ERROR_AXIOS: error });
+    }
     // จัดการกับข้อผิดพลาดก่อนส่ง request
     return Promise.reject(error);
+  }
+);
+
+axiosServer.interceptors.response.use(
+  async (response) => {
+    return response;
+  },
+  async (error: AxiosError) => {
+    if(DEBUG){
+      console.log({ ERROR_AXIOS: error });
+    }
+    return Promise.reject(error);
+    // จัดการกับข้อผิดพลาดหลังจากส่ง request
   }
 );
