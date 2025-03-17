@@ -4,6 +4,7 @@ import { Form, FormMessage } from '@/components/ui/form';
 import { FormFieldCommon } from '@/components/ui/form-field-common';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -62,12 +63,14 @@ const LoginForm = ({
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-6">
-                    <div className="flex flex-col items-center text-center">
-                        <h1 className="text-2xl font-bold">Welcome back</h1>
-                        <p className="text-balance text-muted-foreground">
-                            Login to your Acme Inc account
-                        </p>
-                    </div>
+                    <motion.div
+                        transition={{
+                            delay: .3,
+                            duration: .4
+                        }}
+                        className="flex flex-col items-center text-center">
+                        <h1 className="text-2xl font-bold">Sign in to App</h1>
+                    </motion.div>
                     {error && (
                         <p
                             data-slot="error-message"

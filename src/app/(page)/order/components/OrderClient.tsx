@@ -3,16 +3,23 @@ import DataTable from '@/components/table-common';
 import HeaderTitle from '@/components/ui/header-title';
 import { orderColumnDef } from '../data-table/order-column';
 import { Order } from '@/typed';
+import useDataTable from '@/hooks/data-table-hook';
 
 type Props = {
     orders: Order[];
 };
 
-const OrderClient = (props: Props) => {
+const OrderClient = ({
+    orders
+}: Props) => {
+    const { table} = useDataTable({
+        data: orders,
+        columns: orderColumnDef
+    });
     return (
         <div className=''>
             <HeaderTitle title='Order management' />
-            <DataTable data={props.orders} columnsDef={orderColumnDef} sortInputBy={"orderData"} />
+            <DataTable table={table}  />
         </div>
     );
 };

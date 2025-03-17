@@ -68,7 +68,7 @@ interface Category {
     id: number;
     name: string;
     imageUrl: string | File;
-    parentId: number | null;
+    parent: Category | null;
     children: Category[]
 }
 

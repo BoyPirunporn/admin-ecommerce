@@ -22,9 +22,6 @@ axiosServer.interceptors.request.use(
     return config;
   },
   (error) => {
-    if (DEBUG) {
-      console.log({ ERROR_AXIOS: error });
-    }
     // จัดการกับข้อผิดพลาดก่อนส่ง request
     return Promise.reject(error);
   }
@@ -35,9 +32,6 @@ axiosServer.interceptors.response.use(
     return response;
   },
   async (error: AxiosError) => {
-    if(DEBUG){
-      console.log({ ERROR_AXIOS: error });
-    }
     return Promise.reject(error);
     // จัดการกับข้อผิดพลาดหลังจากส่ง request
   }

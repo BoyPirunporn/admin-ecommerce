@@ -1,19 +1,23 @@
-'use client'
-import DataTable from '@/components/table-common'
-import { Button } from '@/components/ui/button'
-import HeaderTitle from '@/components/ui/header-title'
-import Link from 'next/link'
-import React from 'react'
-import { productOptionColumnDef } from '../data-table/product-option-column'
+'use client';
+import DataTable from '@/components/table-common';
+import { Button } from '@/components/ui/button';
+import HeaderTitle from '@/components/ui/header-title';
+import Link from 'next/link';
+import React from 'react';
+import { productOptionColumnDef } from '../data-table/product-option-column';
 import { ProductOption } from '@/typed';
+import useDataTable from '@/hooks/data-table-hook';
 
-type Props = {}
 
 const ProductOptionClient = ({
   productOption
 }: {
-  productOption: ProductOption[]
+  productOption: ProductOption[];
 }) => {
+  const { table } = useDataTable({
+    data: productOption,
+    columns: productOptionColumnDef,
+  });
   return (
     <div className=''>
       <HeaderTitle title='Product option management' rightAction={(
@@ -21,9 +25,9 @@ const ProductOptionClient = ({
           <Link href={'/product-option/create'}>Add option</Link>
         </Button>
       )} />
-      <DataTable data={productOption} columnsDef={productOptionColumnDef} sortInputBy={"name"} />
+      <DataTable table={table}  />
     </div>
-  )
-}
+  );
+};
 
-export default ProductOptionClient
+export default ProductOptionClient;

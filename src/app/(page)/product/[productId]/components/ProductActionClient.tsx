@@ -79,8 +79,6 @@ const ProductActionClient = ({
         name: "productVariants"
     });
 
-    console.log(form.formState.errors)
-
     const onSubmit = async (data: ProductScheme) => {
         const formData = new FormData();
         try {
@@ -114,11 +112,6 @@ const ProductActionClient = ({
             formData.append("description", data.description!);
             formData.append("mainImage", data.mainImage);
 
-            console.log("PRODUCT ID",formData.get("id"))
-            console.log("PRODUCT VARIANT ID",formData.get("productVariants[0].id"))
-            console.log(" VARIANT IMAGE ID",formData.get("productVariants[0].variantImage.id"))
-            console.log(" PRODUCT VARIANT OPTION ID",formData.get("productVariants[0].productVariantOptions[0].id"))
-            console.log(" PRODUCT OPTION ID",formData.get("productVariants[0].productVariantOptions[0].productOptionValue.id"))
             if (product !== null && searchParam.get("update") === "true") {
                 await updateProduct(formData);
             } else {
@@ -202,7 +195,6 @@ const ProductActionClient = ({
                                             <FormFileUpload
                                                 value={field.value}
                                                 onDelete={(id: string) => {
-                                                    console.log("HANDLE");
                                                     field.onChange("");
                                                 }}
                                                 onChange={(e: File) => {

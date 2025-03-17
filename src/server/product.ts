@@ -7,7 +7,6 @@ import axios from "axios";
 
 export const getProductById = async (id: string): Promise<Product | null> => {
     try {
-        console.log({ id });
         const response = await axiosServer.get<ResponseWithPayload<Product>>(`${PRODUCT}/${Number(id)}`);
         return response.data.payload;
     } catch (error) {

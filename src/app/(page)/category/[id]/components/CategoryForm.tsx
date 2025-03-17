@@ -26,15 +26,17 @@ const baseCategorySchema = z.object({
         }
         return true;
     }, { message: "File must be less than 5MB" }),
-    parentId: z.number().nullable(),
 });
 
 type CategoryScheme = z.infer<typeof baseCategorySchema> & {
     children: CategoryScheme[];
+} & {
+    parent: CategoryScheme | null,
 };
 
 const categoryZod: z.ZodType<CategoryScheme> = baseCategorySchema.extend({
     children: z.lazy(() => categoryZod.array()),
+    parent:z.lazy(() => categoryZod.nullable())
 });
 
 
@@ -52,33 +54,28 @@ const CategoryForm = ({
             id: null,
             name: "",
             imageUrl: "",
-            parentId: null,
+            parent: null,
             children: []
         }
     });
 
 
     const onSubmit = async (data: CategoryZod) => {
-        console.log(data)
         const formData = new FormData();
         try {
             formData.append("name", data.name);
             formData.append("imageUrl", data.imageUrl);
             if (data.children.length) {
-                console.log("children is not empty")
                 data.children.forEach((child: CategoryScheme, index) => {
                     formData.append(`children[${index}].name`, child.name);
                     formData.append(`children[${index}].imageUrl`, data.imageUrl);
                 });
             }
-            console.log(formData.get("children[0].name"))
-            console.log(formData.get("children[0].imageUrl"))
             const response = await createCategory(formData);
-            console.log(response);
 
-            // toast(response);
-            // await delay(1000);
-            // window.location.href = "/category";
+            toast(response);
+            await delay(1000);
+            window.location.href = "/category";
         } catch (error) {
             console.log(error);
         }
@@ -95,7 +92,7 @@ const CategoryForm = ({
             id: null,
             name: "",
             imageUrl: "",
-            parentId: null,
+            parent: null,
             children: []
         });
     };

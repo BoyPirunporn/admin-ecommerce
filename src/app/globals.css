@@ -59,6 +59,7 @@
   @media (width >=1320px) {
     max-width: 1320px;
   }
+
   @media (width >=1536px) {
     max-width: 1536px;
   }
@@ -188,6 +189,10 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;}
+    @apply border-border outline-ring/50;
+  }
+
   body {
-    @apply bg-background text-foreground;}}
+    @apply bg-background text-foreground;
+  }
+}

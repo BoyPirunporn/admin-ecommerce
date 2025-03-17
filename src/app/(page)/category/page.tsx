@@ -1,15 +1,14 @@
-import React from 'react'
-import CategoryClient from './components/CategoryClient'
-import { getAllCategory } from '@/server/category'
+import { delay } from '@/lib/utils';
+import { getAllCategory } from '@/server/category';
+import CategoryClient from './components/CategoryClient';
 
-type Props = {}
 
-const CategoryPage = async (props: Props) => {
+const CategoryPage = async () => {
+  await delay(1.5 * 1000)
   const result = await getAllCategory();
-  console.log(result);
   return (
-    <CategoryClient categories={result}/>
-  )
-}
+    <CategoryClient categories={result} />
+  );
+};
 
-export default CategoryPage
+export default CategoryPage;

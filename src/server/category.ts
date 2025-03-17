@@ -23,7 +23,6 @@ export const createCategory = async (formData: FormData): Promise<string> => {
                 "Content-Type": "multipart/form-data"
             }
         });
-        console.log(response.data)
         return "Category has been created successfully";
     } catch (error) {
         console.log(error)

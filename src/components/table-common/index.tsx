@@ -8,57 +8,51 @@ import {
 } from '@/components/ui/table';
 import EachElement from '@/lib/EachElement';
 import {
-    ColumnDef,
-    ColumnFiltersState,
     flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-    VisibilityState
+    RowData,
+    Table as TableType
 } from '@tanstack/react-table';
 import React from 'react';
 // import FilterHeader from '../filter-header';
 
-interface IDataTable<T> {
-    data: T[];
-    columnsDef: ColumnDef<T>[];
-    sortInputBy: keyof T;
-    customHeader?: React.ReactNode;
+interface IOptionFilter<T> {
+    filterHeader: boolean;
+    customFilter?: React.ReactNode | null;
+    sort?: {
+        by: keyof T;
+        placeHolderSort?: string;
+    };
+}
+
+interface IDataTable<T extends RowData> {
+    options?: IOptionFilter<T>;
+    table: TableType<T>;
 }
 
 const DataTable = <T,>({
-    data,
-    sortInputBy,
-    columnsDef: columns,
-    customHeader
+    options,
+    table
 }: IDataTable<T>) => {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    
+    // const table = useReactTable({
+    //     data,
+    //     columns,
+    //     onSortingChange: setSorting,
+    //     onColumnFiltersChange: setColumnFilters,
+    //     getCoreRowModel: getCoreRowModel(),
+    //     getPaginationRowModel: getPaginationRowModel(),
+    //     getSortedRowModel: getSortedRowModel(),
+    //     getFilteredRowModel: getFilteredRowModel(),
+    //     onColumnVisibilityChange: setColumnVisibility,
+    //     onRowSelectionChange: setRowSelection,
+    //     state: {
+    //         sorting,
+    //         columnFilters,
+    //         columnVisibility,
+    //         rowSelection,
+    //     },
 
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState({});
-    const table = useReactTable({
-        data,
-        columns,
-        onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
-        state: {
-            sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
-        },
-
-    });
+    // });
     return (
         <div className="w-full">
             {/* <FilterHeader
@@ -143,7 +137,7 @@ const DataTable = <T,>({
                         ) : (
                             <TableRow>
                                 <TableCell
-                                    colSpan={columns.length}
+                                    colSpan={table.getAllColumns().length}
                                     className='h-24 text-center'
                                 >
                                     No Results.
