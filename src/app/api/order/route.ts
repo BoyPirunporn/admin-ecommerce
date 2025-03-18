@@ -1,6 +1,6 @@
-import { PRODUCT } from "@/constants";
+import { ORDER, } from "@/constants";
 import { axiosServer } from "@/lib/axios-server";
-import { Product, ResponseWithDataTable } from "@/typed";
+import { Order, ResponseWithDataTable } from "@/typed";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest) => {
@@ -9,7 +9,8 @@ export const GET = async (request: NextRequest) => {
         const size = Number(request.nextUrl.searchParams.get("size") ?? 10);
         const sort = request.nextUrl.searchParams.get("sort") ?? null;
         const orderBy = request.nextUrl.searchParams.get("orderBy") ?? null;
-        const response = await axiosServer.get<ResponseWithDataTable<Product>>(PRODUCT, {
+
+        const response = await axiosServer.get<ResponseWithDataTable<Order>>(ORDER, {
             params: {
                 page,
                 size,

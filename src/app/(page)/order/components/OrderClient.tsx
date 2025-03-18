@@ -1,9 +1,8 @@
 'use client';
-import DataTable from '@/components/table-common';
 import HeaderTitle from '@/components/ui/header-title';
 import { orderColumnDef } from '../data-table/order-column';
 import { Order } from '@/typed';
-import useDataTable from '@/hooks/data-table-hook';
+import RootDataTable from '@/components/table-common/RootDataTable';
 
 type Props = {
     orders: Order[];
@@ -16,7 +15,11 @@ const OrderClient = ({
     return (
         <div className=''>
             <HeaderTitle title='Order management' />
-            {/* <DataTable table={table}  /> */}
+            <RootDataTable columns={orderColumnDef} api='/api/order' options={{
+                params: {
+                    sort: "desc"
+                }
+            }} />
         </div>
     );
 };

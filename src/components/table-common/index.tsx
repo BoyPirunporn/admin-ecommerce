@@ -126,7 +126,7 @@ const DataTable = <T,>({
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
-                    Page {pageIndex} of {pageCount || 0}
+                    Page {!table.getRowModel().rows?.length ? 0 : pageIndex + 1} of {pageCount || 0}
                 </div>
                 <Select
                     defaultValue={pageSizeOption[0].toString()}

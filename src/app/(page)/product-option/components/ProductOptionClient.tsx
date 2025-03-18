@@ -6,7 +6,7 @@ import Link from 'next/link';
 import React from 'react';
 import { productOptionColumnDef } from '../data-table/product-option-column';
 import { ProductOption } from '@/typed';
-import useDataTable from '@/hooks/data-table-hook';
+import RootDataTable from '@/components/table-common/RootDataTable';
 
 
 const ProductOptionClient = ({
@@ -22,7 +22,11 @@ const ProductOptionClient = ({
           <Link href={'/product-option/create'}>Add option</Link>
         </Button>
       )} />
-      {/* <DataTable table={table}  /> */}
+      <RootDataTable columns={productOptionColumnDef} api='/api/product-option' options={{
+        params: {
+          sort: "desc"
+        }
+      }} />
     </div>
   );
 };

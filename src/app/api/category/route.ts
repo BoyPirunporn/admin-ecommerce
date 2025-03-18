@@ -7,10 +7,6 @@ export const GET = async (request: NextRequest) => {
     try {
         const page = Number(request.nextUrl.searchParams.get("page") ?? 0);
         const size = Number(request.nextUrl.searchParams.get("size") ?? 10);
-        console.log({
-            page,
-            size
-        })
         const response = await axiosServer.get<ResponseWithDataTable<Category>>(CATEGORY, {
             params: {
                 page: page,

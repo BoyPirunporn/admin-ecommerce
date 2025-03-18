@@ -45,11 +45,11 @@ const authOptions: AuthOptions = ({
             return null;
         }
     },
-    session: {
-        strategy: "jwt",
-        maxAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
-        updateAge: Number(process.env.SESSION_TIMEOUT) ?? 900
-    },
+    // session: {
+    //     strategy: "jwt",
+    //     maxAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
+    //     updateAge: Number(process.env.SESSION_TIMEOUT) ?? 900
+    // },
     providers: [
         CredentialsProvider({
             id: "spring-credential",
