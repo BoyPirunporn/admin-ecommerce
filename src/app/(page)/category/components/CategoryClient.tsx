@@ -21,6 +21,11 @@ const CategoryClient = (props: Props) => {
             <RootDataTable
                 api={`/api/category`}
                 columns={categoryColumnDef}
+                options={{
+                    params:{
+                        sort:"asc"
+                    }
+                }}
             />
         </>
     );
