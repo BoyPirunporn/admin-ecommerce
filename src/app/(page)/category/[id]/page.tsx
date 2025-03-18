@@ -1,6 +1,7 @@
 
 import React from 'react'
 import CategoryForm from './components/CategoryForm';
+import CategoryTreeForm from './components/CategoryTreeForm';
 
 type Props = {
     params: Promise<{
@@ -10,7 +11,7 @@ type Props = {
 
 const page = async (props: Props) => {
     return (
-        <CategoryForm category={null} />
+        <CategoryTreeForm  />
     )
 }
 
