@@ -1,4 +1,4 @@
-import { getAllOrder } from '@/server/order';
+import { getAllOrder } from '@/server-action/order.service';
 import { Suspense } from 'react';
 import OrderClient from './components/OrderClient';
 import { delay } from '@/lib/utils';

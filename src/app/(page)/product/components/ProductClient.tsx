@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Product } from '@/typed';
 import useDataTable from '@/hooks/data-table-hook';
+import RootDataTable from '@/components/table-common/RootDataTable';
 
 type Props = {
     products: Product[];
@@ -16,10 +17,6 @@ const ProductClient = ({
     products
 }: Props) => {
 
-    const { table } = useDataTable({
-        data: products,
-        columns: productColumnDef
-    });
     return (
         <div className=''>
             <HeaderTitle title='Product management' rightAction={(
@@ -27,7 +24,12 @@ const ProductClient = ({
                     <Link href={'/product/create?create=true'}>add product</Link>
                 </Button>
             )} />
-            <DataTable table={table} />
+            <RootDataTable columns={productColumnDef} api='/api/product' options={{
+                params: {
+                    orderBy: "createdAt",
+                    sort: "desc"
+                }
+            }} />
         </div>
     );
 };

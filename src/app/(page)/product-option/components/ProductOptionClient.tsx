@@ -14,10 +14,7 @@ const ProductOptionClient = ({
 }: {
   productOption: ProductOption[];
 }) => {
-  const { table } = useDataTable({
-    data: productOption,
-    columns: productOptionColumnDef,
-  });
+
   return (
     <div className=''>
       <HeaderTitle title='Product option management' rightAction={(
@@ -25,7 +22,7 @@ const ProductOptionClient = ({
           <Link href={'/product-option/create'}>Add option</Link>
         </Button>
       )} />
-      <DataTable table={table}  />
+      {/* <DataTable table={table}  /> */}
     </div>
   );
 };

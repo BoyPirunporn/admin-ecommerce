@@ -12,6 +12,13 @@ interface ResponseWithPayload<T> extends BaseResponse {
     payload: T;
 }
 
+interface ResponseWithDataTable<T> extends BaseResponse {
+    payload: T[];
+    count: number;
+    page: number;
+    size: number;
+}
+
 
 interface ProductVariant {
     id: number;
@@ -62,6 +69,8 @@ interface Product {
     category: string;
     mainImage: string;
     productVariants: ProductVariant[];
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 interface Category {

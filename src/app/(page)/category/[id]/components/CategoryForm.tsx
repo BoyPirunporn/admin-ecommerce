@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { FormFieldCommon } from '@/components/ui/form-field-common';
 import { delay } from '@/lib/utils';
-import { createCategory } from '@/server/category';
+import { createCategory } from '@/server-action/category.service';
 import { Category } from '@/typed';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
@@ -36,7 +36,7 @@ type CategoryScheme = z.infer<typeof baseCategorySchema> & {
 
 const categoryZod: z.ZodType<CategoryScheme> = baseCategorySchema.extend({
     children: z.lazy(() => categoryZod.array()),
-    parent:z.lazy(() => categoryZod.nullable())
+    parent: z.lazy(() => categoryZod.nullable())
 });
 
 
@@ -68,7 +68,7 @@ const CategoryForm = ({
             if (data.children.length) {
                 data.children.forEach((child: CategoryScheme, index) => {
                     formData.append(`children[${index}].name`, child.name);
-                    formData.append(`children[${index}].imageUrl`, data.imageUrl);
+                    formData.append(`children[${index}].imageUrl`, child.imageUrl);
                 });
             }
             const response = await createCategory(formData);

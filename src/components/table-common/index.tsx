@@ -1,10 +1,11 @@
+'use client';
 import {
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableHeader,
-    TableRow
+    TableRow,
 } from '@/components/ui/table';
 import EachElement from '@/lib/EachElement';
 import {
@@ -13,7 +14,8 @@ import {
     Table as TableType
 } from '@tanstack/react-table';
 import React from 'react';
-// import FilterHeader from '../filter-header';
+import { Button } from '../ui/button';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface IOptionFilter<T> {
     filterHeader: boolean;
@@ -25,55 +27,30 @@ interface IOptionFilter<T> {
 }
 
 interface IDataTable<T extends RowData> {
-    options?: IOptionFilter<T>;
+    // options?: IOptionFilter<T>;
     table: TableType<T>;
+    handlePreviousPage: () => void;
+    handleNextPage: () => void;
+    pageIndex: number;
+    pageCount: number;
+    isLoading: boolean;
+    setPageSize: (value: PageSize) => void;
 }
 
-const DataTable = <T,>({
-    options,
-    table
-}: IDataTable<T>) => {
-    
-    // const table = useReactTable({
-    //     data,
-    //     columns,
-    //     onSortingChange: setSorting,
-    //     onColumnFiltersChange: setColumnFilters,
-    //     getCoreRowModel: getCoreRowModel(),
-    //     getPaginationRowModel: getPaginationRowModel(),
-    //     getSortedRowModel: getSortedRowModel(),
-    //     getFilteredRowModel: getFilteredRowModel(),
-    //     onColumnVisibilityChange: setColumnVisibility,
-    //     onRowSelectionChange: setRowSelection,
-    //     state: {
-    //         sorting,
-    //         columnFilters,
-    //         columnVisibility,
-    //         rowSelection,
-    //     },
+export const pageSizeOption = [5, 10, 20, 50, 100] as const;
+export type PageSize = typeof pageSizeOption[number];
 
-    // });
+const DataTable = <T,>({
+    table,
+    pageIndex,
+    pageCount,
+    handlePreviousPage,
+    handleNextPage,
+    isLoading,
+    setPageSize
+}: IDataTable<T>) => {
     return (
         <div className="w-full">
-            {/* <FilterHeader
-                value={table.getColumn(sortInputBy.toString())?.getFilterValue() as string}
-                sortBy={sortInputBy}
-                onInputChange={(e) => table.getColumn(sortInputBy.toString())?.setFilterValue(e.target.value)}
-                renderDropdownContent={() => (
-                    <EachElement
-                        of={table.getAllColumns().filter(c => c.getCanHide())}
-                        render={(column) => (
-                            <DropdownMenuCheckboxItem
-                                key={column.id}
-                                className="capitalize"
-                                checked={column.getIsVisible()}
-                                onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                            >
-                                {column.id}
-                            </DropdownMenuCheckboxItem>
-                        )} />
-                )}
-                customHeader={customHeader} /> */}
             <div className="rounded-md border">
                 <Table>
                     <TableHeader >
@@ -90,7 +67,7 @@ const DataTable = <T,>({
                                                         width: `${header.getSize()}px`,
                                                         maxWidth: `${header.getSize()}px`,
                                                         minWidth: `${header.getSize()}px`,
-                                                        
+
 
                                                     }} >
                                                         {header.isPlaceholder ? null : (
@@ -140,14 +117,52 @@ const DataTable = <T,>({
                                     colSpan={table.getAllColumns().length}
                                     className='h-24 text-center'
                                 >
-                                    No Results.
+                                    {isLoading ? "...Loading " : "No Result"}
                                 </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
                 </Table>
             </div>
-        </div>
+            <div className="flex items-center justify-end space-x-2 py-4">
+                <div className="flex-1 text-sm text-muted-foreground">
+                    Page {pageIndex} of {pageCount || 0}
+                </div>
+                <Select
+                    defaultValue={pageSizeOption[0].toString()}
+                    onValueChange={(value) => setPageSize(Number(value) as PageSize)}
+                >
+                    <SelectTrigger disabled={!table.getRowModel().rows?.length} className="max-w-[100px] cursor-pointer">
+                        <SelectValue placeholder="Select a Payment Method" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            {pageSizeOption.map(item => (
+                                <SelectItem className='cursor-pointer' key={item} value={item.toString()}>{item}</SelectItem>
+                            ))}
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                <div className="space-x-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handlePreviousPage}
+                        disabled={pageIndex === 0}
+                    >
+                        Previous
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleNextPage}
+                        disabled={(pageIndex + 1 === pageCount) || !table.getRowModel().rows?.length}
+                    >
+                        Next
+                    </Button>
+                </div>
+            </div>
+        </div >
     );
 };
 

@@ -1,64 +1,110 @@
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
-import Link from 'next/link'
-import React from 'react'
+import { Form } from '@/components/ui/form'
+import { FormFieldCommon } from '@/components/ui/form-field-common'
+import { cn, delay } from '@/lib/utils'
+import { register } from '@/server-action/auth.service'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
 
 type Props = {
     switchForm: (form: string) => void;
 }
 
+const loginZod = z.object({
+    email: z.string().email(),
+    password: z.string(),
+    confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Password is not match",
+    path: ["confirmPassword"]
+});
+
+type LoginZod = z.infer<typeof loginZod>;
 const RegisterForm = ({
     switchForm
 }: Props) => {
+
+    const [error, setError] = useState<string | null>(null);
+    const route = useRouter();
+
+    const form = useForm<LoginZod>({
+        resolver: zodResolver(loginZod),
+        defaultValues: {
+            email: "",
+            password: "",
+            confirmPassword: ""
+        }
+    });
+
+    const onSubmit = async (data: LoginZod) => {
+        try {
+            await register(data.email, data.password);
+            toast.success("Create authen success")
+            await delay(2000);
+            switchForm("login")
+        } catch (error) {
+            setError("Internal Server Error");
+            console.log({ error });
+        }
+    };
     return (
-        <form >
-            <div className="flex flex-col gap-6">
-                <div className="flex flex-col items-center text-center">
-                    <h1 className="text-2xl font-bold">Register</h1>
-                    <p className="text-balance text-muted-foreground">
-                        Login to your Acme Inc account
-                    </p>
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        placeholder="m@example.com"
-                        required
-                    />
-                </div>
-                <div className="grid gap-2">
-                    <div className="flex items-center">
-                        <Label htmlFor="password">Password</Label>
-                        <a
-                            href="#"
-                            className="ml-auto text-sm underline-offset-2 hover:underline"
-                        >
-                            Forgot your password?
-                        </a>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+                <div className="flex flex-col gap-6">
+                    <div
+                        className="flex flex-col items-center text-center">
+                        <h1 className="text-2xl font-bold">Sign up to App</h1>
                     </div>
-                    <Input id="password" type="password" required />
-                </div>
-                <Button type="submit" className="w-full">
-                    Login
-                </Button>
-                <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                    <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                        Or continue with
-                    </span>
-                </div>
-                <div className="text-center text-sm">
-                    Don&apos;t have an account?{" "}
-                    <Button onClick={() => switchForm("login")} className="underline underline-offset-4">
-                        Sign in
+                    {error && (
+                        <p
+                            data-slot="error-message"
+                            className={cn("text-destructive-foreground  rounded-sm bg-destructive-foreground/10 border-0  p-2.5 text-base")}
+                        >
+                            {error}
+                        </p>
+                    )}
+                    <div className="grid gap-2">
+                        <FormFieldCommon
+                            label='Email'
+                            control={form.control}
+                            name='email'
+                            placeholder='x@example.com'
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <FormFieldCommon
+                            label='Password'
+                            control={form.control}
+                            name='password'
+                            type='password'
+                            placeholder='Enter password'
+                        />
+                    </div>
+                    <div className="grid gap-2">
+                        <FormFieldCommon
+                            label='Confirm Password'
+                            control={form.control}
+                            name='confirmPassword'
+                            type='password'
+                            placeholder='Confirm password'
+                        />
+                    </div>
+                    <Button type="submit" className="w-full">
+                        Register
                     </Button>
+                    <div className="text-center text-sm">
+                        Already have an account?{""}
+                        <Button type="button" variant={"outline"} onClick={() => switchForm("login")} className="underline underline-offset-4">
+                            Sign in
+                        </Button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </Form>
     )
 }
 

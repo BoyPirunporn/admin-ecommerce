@@ -1,6 +1,6 @@
-import { getAllCategory } from '@/server/category';
-import { getProductById } from '@/server/product';
-import { getAllProductOption } from '@/server/product-option';
+import { getAllCategory } from '@/server-action/category.service';
+import { getProductById } from '@/server-action/product.service';
+import { getAllProductOption } from '@/server-action/product-option.service';
 import ProductActionClient from './components/ProductActionClient';
 
 type Props = {

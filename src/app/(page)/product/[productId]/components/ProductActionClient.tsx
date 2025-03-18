@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import ProductVariantForm, { productVariantZod } from './ProductVariantForm';
 import ProductVariantItem from './ProductVariantItem';
-import { createProduct, updateProduct } from '@/server/product';
+import { createProduct, updateProduct } from '@/server-action/product.service';
 import { useFormState } from 'react-dom';
 import { useSearchParams } from 'next/navigation';
 import { AxiosError } from 'axios';
@@ -23,7 +23,7 @@ import { Product, ProductOption, Category, ProductVariant } from '@/typed';
 
 
 export const productScheme = z.object({
-    id:z.number().nullable(),
+    id: z.number().nullable(),
     name: z.string().min(6),
     category: z.string().min(1),
     price: z.number().default(0),
@@ -64,7 +64,7 @@ const ProductActionClient = ({
     const form = useForm<ProductScheme>({
         resolver: zodResolver(productScheme),
         defaultValues: product ? { ...product } : {
-            id:null,
+            id: null,
             name: "",
             price: 0,
             category: "",
@@ -83,27 +83,27 @@ const ProductActionClient = ({
         const formData = new FormData();
         try {
             data.productVariants.map((item, index) => {
-                if(item.id){
+                if (item.id) {
                     formData.append(`productVariants[${index}].id`, item.id.toString());
                 }
                 formData.append(`productVariants[${index}].price`, item.price.toString());
                 formData.append(`productVariants[${index}].stock`, item.stock.toString());
                 formData.append(`productVariants[${index}].sku`, item.sku.toString());
-                if(item.variantImage.id){
+                if (item.variantImage.id) {
                     formData.append(`productVariants[${index}].variantImage.id`, item.variantImage.id.toString());
                 }
                 formData.append(`productVariants[${index}].variantImage.url`, item.variantImage.url);
 
                 // Loop through the productVariantOptions
                 item.productVariantOptions.map((c, i) => {
-                    if(c.id){
+                    if (c.id) {
                         formData.append(`productVariants[${index}].productVariantOptions[${i}].id`, c.id.toString());
                     }
                     formData.append(`productVariants[${index}].productVariantOptions[${i}].productOptionValue.value`, c.productOptionValue.value!);
                     formData.append(`productVariants[${index}].productVariantOptions[${i}].productOptionValue.id`, c.productOptionValue.id.toString());
                 });
             });
-            if(product?.id){
+            if (product?.id) {
                 formData.append("id", product.id.toString()!);
             }
             formData.append("name", data.name);

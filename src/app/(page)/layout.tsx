@@ -5,6 +5,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
+import QueryProvider from '@/providers/query-provider';
 import React, { Suspense } from 'react';
 
 type Props = {
@@ -23,8 +24,10 @@ const layout = ({
                         <SidebarTrigger className="-ml-1" />
                     </header>
                     <main className="relative py-6 lg:gap-10 lg:py-8 px-5 ">
-                        <Suspense fallback={<SkeletonDataTable columns={5} rows={5}/>}>
-                            {children}
+                        <Suspense fallback={<SkeletonDataTable columns={5} rows={5} />}>
+                            <QueryProvider>
+                                {children}
+                            </QueryProvider>
                         </Suspense>
                     </main>
                 </SidebarInset>

@@ -1,7 +1,7 @@
 
 import React from 'react'
 import ProductOptionForm from './components/ProductOptionForm';
-import { getProductOptionById } from '@/server/product-option';
+import { getProductOptionById } from '@/server-action/product-option.service';
 
 type Props = {
     params: Promise<{

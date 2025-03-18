@@ -12,14 +12,11 @@ type Props = {
 const OrderClient = ({
     orders
 }: Props) => {
-    const { table} = useDataTable({
-        data: orders,
-        columns: orderColumnDef
-    });
+
     return (
         <div className=''>
             <HeaderTitle title='Order management' />
-            <DataTable table={table}  />
+            {/* <DataTable table={table}  /> */}
         </div>
     );
 };
