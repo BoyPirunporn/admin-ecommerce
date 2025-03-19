@@ -31,14 +31,14 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} antialiased dark`}
+        className={`${poppins.variable} antialiased `}
       >
         <AuthProvider session={session}>
           <nav className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            
+
           </nav>
           {children}
-          <Toaster/>
+          <Toaster />
           <DialogProvider />
           <AuthSessionProvider />
         </AuthProvider>

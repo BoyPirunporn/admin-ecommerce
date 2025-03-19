@@ -1,9 +1,10 @@
-
+'use client';
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from '@/components/ui/checkbox';
 import DropdownAction from "@/components/dropdown-action";
 import ImageProvider from "@/providers/ImageProvider";
 import { Category } from "@/typed";
+import { useRouter } from "next/navigation";
 
 
 
@@ -57,11 +58,11 @@ export const categoryColumnDef: ColumnDef<Category>[] = [
     accessorKey: "id",
     header: "Action",
     size: 1,
-    cell: ({ getValue, row }) => {
+    cell: ({ row }) => {
       return (
         <DropdownAction
           onDelete={() => onDelete(row.original.id)}
-          onEdit={() => onEdit(row.original.id)}
+          edit={`/category/${row.original.id}`}
         />
       );
     }
@@ -73,5 +74,6 @@ const onDelete = async (id: number) => {
 
 };
 const onEdit = async (id: number) => {
-
+  const router = useRouter();
+  router.push(`/category/${id}`);
 };

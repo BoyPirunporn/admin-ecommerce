@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
 import {
     DropdownMenu,
@@ -6,16 +7,19 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from './ui/dropdown-menu';
+import Link from 'next/link';
 
 type Props = {
     onDelete: () => void;
-    onEdit: () => void;
+    edit: string;
 };
 
 const DropdownAction = ({
     onDelete,
-    onEdit
+    edit
 }: Props) => {
+    const router = useRouter();
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -23,11 +27,11 @@ const DropdownAction = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
                 <DropdownMenuGroup>
-                    <DropdownMenuItem  onClick={onDelete}>
+                    <DropdownMenuItem onClick={onDelete}>
                         Delete
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={onEdit}>
-                        Edit
+                    <DropdownMenuItem asChild>
+                        <Link href={edit}>Edit</Link>
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
             </DropdownMenuContent>

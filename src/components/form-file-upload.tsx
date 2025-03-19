@@ -65,7 +65,7 @@ const FormFileUpload: React.FC<FileUploadProps> = ({
                 </div>
             </div>
         );
-    } else if (value.toString().length) {
+    } else if (value && value.toString().length) {
         let url = process.env.NEXT_PUBLIC_DOMAIN_IMAGE + "/" + value;
         return (
             <div className="relative w-[224px] h-[224px] flex flex-row justify-start gap-2">

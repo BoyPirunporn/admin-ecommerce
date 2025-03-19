@@ -4,8 +4,14 @@ import { CATEGORY } from "@/constants";
 import { axiosServer } from "@/lib/axios-server";
 import { Category, ResponseWithPayload } from "@/typed";
 
-export const getCategoryByName = async (): Promise<Category | null> => {
-    return null;
+export const getCategoryById = async (id: number): Promise<Category | null> => {
+    try {
+        const response = await axiosServer.get<ResponseWithPayload<Category>>(`${CATEGORY}/${id}`);
+        return response.data.payload;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
 };
 export const getAllCategory = async (): Promise<Category[]> => {
     try {
@@ -18,12 +24,25 @@ export const getAllCategory = async (): Promise<Category[]> => {
 };
 export const createCategory = async (formData: FormData): Promise<string> => {
     try {
-       const response =  await axiosServer.post(CATEGORY, formData, {
+        await axiosServer.post(CATEGORY, formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         });
         return "Category has been created successfully";
+    } catch (error) {
+        console.log(error)
+        throw error;
+    }
+};
+export const updateCategory = async (formData: FormData): Promise<string> => {
+    try {
+        await axiosServer.put(CATEGORY, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+        return "Category has been updated successfully";
     } catch (error) {
         console.log(error)
         throw error;

@@ -77,8 +77,8 @@ interface Category {
     id: number;
     name: string;
     imageUrl: string | File;
-    parent: Category | null;
-    children: Category[]
+    parent: Categorynumber;
+    children: Category[];
 }
 
 interface ProductOption {
