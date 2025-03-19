@@ -45,11 +45,41 @@ const authOptions: AuthOptions = ({
             return null;
         }
     },
-    // session: {
-    //     strategy: "jwt",
-    //     maxAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
-    //     updateAge: Number(process.env.SESSION_TIMEOUT) ?? 900
+    // cookies: {
+    //     sessionToken: {
+    //         name: `__Secure-next-auth.session-token`,
+    //         options: {
+    //             httpOnly: true,
+    //             secure: process.env.NODE_ENV === "production",
+    //             sameSite: "lax",
+    //         },
+    //     },
     // },
+    // jwt: {
+    //     encode: async ({ secret, token }) => {
+    //         // ถ้าคุณต้องการเข้ารหัส JWT ด้วย secret ของคุณ
+    //         return jwt.sign(token, secret, { expiresIn: "1h" });
+    //     },
+    //     decode: async ({ secret, token }) => {
+    //         // ถอดรหัส JWT
+    //         try {
+    //             return jwt.verify(token, secret);
+    //         } catch (error) {
+    //             return null;
+    //         }
+    //     },
+    // },
+    session: {
+        strategy: "jwt",
+        // Seconds - How long until an idle session expires and is no longer valid.
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+
+        // Seconds - Throttle how frequently to write to database to extend a session.
+        // Use it to limit write operations. Set to 0 to always update the database.
+        // Note: This option is ignored if using JSON Web Tokens
+        updateAge: 24 * 60 * 60, // 24 hours
+
+    },
     providers: [
         CredentialsProvider({
             id: "spring-credential",

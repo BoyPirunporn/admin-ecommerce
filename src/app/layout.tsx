@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import AsideMenu from "@/components/ui/aside-menu";
 import DialogProvider from "@/providers/dialog-provider";
 import AuthProvider from "@/providers/auth-provider";
 import { getSession } from "./auth";
 import AuthSessionProvider from "@/providers/auth-session-provider";
 import { Toaster } from "@/components/ui/sonner";
-
+import { ThemeProvider } from "@/providers/application-provider";
+import Navbar from "@/components/navbar";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -29,18 +29,23 @@ export default async function RootLayout({
   const session = await getSession();
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.variable} antialiased dark`}
+        className={`${poppins.variable} antialiased`}
       >
         <AuthProvider session={session}>
-          <nav className="border-grid sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            
-          </nav>
-          {children}
-          <Toaster/>
-          <DialogProvider />
-          <AuthSessionProvider />
+          <ThemeProvider
+            attribute={"class"}
+            defaultTheme={"dark"}
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar />
+            {children}
+            <Toaster />
+            <DialogProvider />
+            <AuthSessionProvider />
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
