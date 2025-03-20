@@ -129,10 +129,10 @@ const DashboardClient = (props: Props) => {
 
     return (
         <div className="flex flex-1 flex-col gap-4 p-4">
-            <div className="flex items-center justify-between space-y-2">
-                <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-                <div className="flex items-center space-x-2">
-                    <div className="flex flex-row gap-2">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-start md:justify-between space-y-2">
+                <h2 className="text-3xl font-bold  tracking-tight">Dashboard</h2>
+                <div className="flex flex-col md:flex-row items-center space-x-2">
+                    <div className="flex flex-col md:flex-row gap-4 md:gap-2">
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button
@@ -171,17 +171,17 @@ const DashboardClient = (props: Props) => {
                 {dashBoard.headers.map((item, index) => {
                     const IconComponent = LucideIcons[item.icon] as React.FC<LucideProps>;;
                     return (
-                        <Card key={index} className='aspect-video rounded-xl min-h-[130px]  w-full h-full'>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                                <CardTitle className='tracking-tight text-sm font-medium'>{item.title}</CardTitle>
+                        <Card key={index} className='aspect-video rounded-xl min-h-[130px]  w-full h-full gap-10 md:0 md:block flex'>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 gap-10">
+                                <CardTitle className='tracking-tight text-xl md:text-sm font-medium'>{item.title}</CardTitle>
                                 <CardDescription>
                                     <IconComponent size={18} />
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="pt-0">
-                                    <div className="text-xl font-bold">{item.content}</div>
-                                    <p className="text-xs text-muted-foreground">{item.description}</p>
+                                <div className="pt-0 flex flex-col gap-5 md:gap-0 md:flex-col">
+                                    <div className="text-3xl md:text-xl font-bold">{item.content}</div>
+                                    <p className="text-base md:text-xs text-muted-foreground">{item.description}</p>
                                 </div>
                             </CardContent>
                         </Card>
@@ -191,7 +191,7 @@ const DashboardClient = (props: Props) => {
             </div>
             <div className=" flex-1 rounded-xl bg-gray-200 md:min-h-min" />
             <div className="grid auto-rows-min gap-4 md:grid-cols-7">
-                <Card className='col-span-4'>
+                <Card className='md:col-span-4'>
                     <CardHeader>
                         <CardTitle>Bar Chart - Multiple</CardTitle>
                         <CardDescription>January - June 2024</CardDescription>
@@ -225,7 +225,7 @@ const DashboardClient = (props: Props) => {
                         </div>
                     </CardFooter>
                 </Card>
-                <Card className="flex flex-col w-full col-span-3">
+                <Card className="flex flex-col w-full md:col-span-3">
                     <CardHeader className="items-center pb-0">
                         <CardTitle>Pie Chart - Donut with Text</CardTitle>
                         <CardDescription>January - June 2024</CardDescription>

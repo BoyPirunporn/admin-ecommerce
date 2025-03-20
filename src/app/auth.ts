@@ -1,4 +1,4 @@
-import { AuthOptions, getServerSession, User } from 'next-auth';
+import { AuthOptions, getServerSession, Session, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 import { JWT } from 'next-auth/jwt';
@@ -12,73 +12,53 @@ const authOptions: AuthOptions = ({
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
         session: async ({ session, token }) => {
-            const sanitizedToken = Object.keys(token).reduce((p, c) => {
-                if (
-                    c !== "lat" &&
-                    c !== "exp" &&
-                    c !== "jti" &&
-                    c !== "accessToken" &&
-                    c !== "refreshToken"
-                ) {
-                    return { ...p, [c]: token[c] };
-                } else {
-                    return p;
-                }
-            }, {});
-            return { ...session, error: token.error, expires: new Date(parseJwt(token.accessToken!).exp * 1000).toISOString(), ...sanitizedToken, accessToken: token.accessToken, refreshToken: token.refreshToken };
+            try {
+                const sanitizedToken = Object.keys(token).reduce((p, c) => {
+                    if (
+                        c !== "lat" &&
+                        c !== "exp" &&
+                        c !== "jti" &&
+                        c !== "accessToken" &&
+                        c !== "refreshToken"
+                    ) {
+                        return { ...p, [c]: token[c] };
+                    } else {
+                        return p;
+                    }
+                }, {});
+
+                return { ...session, error: token.error, expires: new Date(parseJwt(token.accessToken!).exp * 1000).toISOString(), ...sanitizedToken, accessToken: token.accessToken, refreshToken: token.refreshToken };
+            } catch (error) {
+                console.log(error);
+                return {} as Session;
+            }
         },
         jwt: async ({ token, user }: { token: JWT, user: User; }) => {
-            if (typeof user !== "undefined") {
-                const jwt = {
-                    ...user,
-                    accessToken: user.accessToken,
-                    refreshToken: user.refreshToken,
-                };
-                return jwt;
+            try {
+                if (typeof user !== "undefined") {
+                    const jwt = {
+                        ...user,
+                        accessToken: user.accessToken,
+                        refreshToken: user.refreshToken,
+                    };
+                    return jwt;
+                }
+                if (Date.now() / 1000 < Number(parseJwt(token.accessToken!).exp)) {
+                    return token;
+                } else if (Date.now() / 1000 < Number(parseJwt(token.refreshToken!).exp)) {
+                    return await refreshToken(token);
+                }
+                // accesstoken expired
+                return null;
+            } catch (error) {
+                throw error;
             }
-            if (Date.now() / 1000 < Number(parseJwt(token.accessToken!).exp)) {
-                return token;
-            } else if (Date.now() / 1000 < Number(parseJwt(token.refreshToken!).exp)) {
-                return await refreshToken(token);
-            }
-            // accesstoken expired
-            return null;
         }
     },
-    // cookies: {
-    //     sessionToken: {
-    //         name: `__Secure-next-auth.session-token`,
-    //         options: {
-    //             httpOnly: true,
-    //             secure: process.env.NODE_ENV === "production",
-    //             sameSite: "lax",
-    //         },
-    //     },
-    // },
-    // jwt: {
-    //     encode: async ({ secret, token }) => {
-    //         // ถ้าคุณต้องการเข้ารหัส JWT ด้วย secret ของคุณ
-    //         return jwt.sign(token, secret, { expiresIn: "1h" });
-    //     },
-    //     decode: async ({ secret, token }) => {
-    //         // ถอดรหัส JWT
-    //         try {
-    //             return jwt.verify(token, secret);
-    //         } catch (error) {
-    //             return null;
-    //         }
-    //     },
-    // },
     session: {
         strategy: "jwt",
-        // Seconds - How long until an idle session expires and is no longer valid.
-        maxAge: 30 * 24 * 60 * 60, // 30 days
-
-        // Seconds - Throttle how frequently to write to database to extend a session.
-        // Use it to limit write operations. Set to 0 to always update the database.
-        // Note: This option is ignored if using JSON Web Tokens
-        updateAge: 24 * 60 * 60, // 24 hours
-
+        maxAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
+        updateAge: Number(process.env.SESSION_TIMEOUT) ?? 900
     },
     providers: [
         CredentialsProvider({
@@ -106,6 +86,7 @@ const authOptions: AuthOptions = ({
                         return null; // ผู้ใช้ไม่ถูกต้อง
                     }
                 } catch (error) {
+                    console.log
                     if (axios.isAxiosError(error)) {
                         throw new Error(error.response?.data?.message || error.message || "Internal Server Error");
                     } else {

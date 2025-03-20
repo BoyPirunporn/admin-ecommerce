@@ -31,11 +31,6 @@
     max-width: none;
   }
 
-  @media (width >=374px) {
-    max-width: 374px;
-    padding-inline: 1.5rem;
-  }
-
   @media (width >=540px) {
     max-width: 540px;
     padding-inline: 2rem;

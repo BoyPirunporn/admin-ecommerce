@@ -6,6 +6,14 @@ import { FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { FormFieldCommon } from "@/components/ui/form-field-common";
 import { X } from "lucide-react";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem } from "@/components/ui/accordion";
+import { AccordionTrigger } from "@radix-ui/react-accordion";
+import { toast } from "sonner";
+import { delay } from "@/lib/utils";
+import { createCategory, updateCategory } from "@/server-action/category.service";
+import { Category } from "@/typed";
+import HeaderTitle from "@/components/ui/header-title";
 
 
 const baseCategorySchema = z.object({
@@ -22,45 +30,90 @@ const baseCategorySchema = z.object({
 type CategoryScheme = z.infer<typeof baseCategorySchema> & {
     children: CategoryScheme[];
 } & {
-    parent: CategoryScheme | null | undefined,
+    parent: CategoryScheme | null,
 };
 
 const categoryZod: z.ZodType<CategoryScheme> = baseCategorySchema.extend({
-    children: z.lazy(() => categoryZod.array()),  // ✅ children มีค่าเริ่มต้นเป็น []
-    parent: z.lazy(() => categoryZod.nullable().optional()).default(null)
+    children: z.lazy(() => categoryZod.array()),
+    parent: z.lazy(() => categoryZod.nullable())
 });
 
 
-type CategoryZod = z.infer<typeof categoryZod>;
-const CategoryTreeForm = () => {
+const CategoryTreeForm = ({
+    category
+}: {
+    category: Category | null
+}) => {
 
 
-    const methods = useForm<{ categories: CategoryZod[]; }>({
-        defaultValues: { categories: [{ id: null, parent: null, name: "", imageUrl: "", children: [] }] },
+    const methods = useForm<CategoryScheme>({
+        defaultValues: category || { id: null, parent: null, name: "", imageUrl: "", children: [] },
     });
 
-    const { register, control, handleSubmit } = methods;
-    const { fields, append, remove } = useFieldArray({ control, name: "categories" });
+    const { control, handleSubmit } = methods;
+    const { fields, append, remove } = useFieldArray({ control, name: "children" });
 
-    const onSubmit = (data: any) => {
+    const onSubmit = async (data: CategoryScheme) => {
         console.log("Submitted Data:", data);
+        try {
+            const formData = new FormData();
+            if (data.id) {
+                formData.append("id", data.id.toString());
+            }
+            formData.append("name", data.name);
+            formData.append("imageUrl", data.imageUrl);
+            if (data.parent && data.parent.id) {
+                formData.append("parentId", data.parent.id.toString())
+
+            }
+
+            // ฟังก์ชันที่ถูกต้อง
+            const toChildren = (nestId: string, child: CategoryScheme) => {
+                if (Array.isArray(child.children) && child.children.length > 0) {
+                    child.children.forEach((chi, index) => {
+                        toChildren(`${nestId}.children[${index}]`, chi);
+                    });
+                }
+                if (child.id) {
+                    formData.append(`${nestId}.id`, child.id.toString());
+                }
+                if (child.parent && child.parent.id) {
+                    formData.append("parentId", child.parent.id.toString())
+                }
+                formData.append(`${nestId}.name`, child.name);
+                formData.append(`${nestId}.imageUrl`, child.imageUrl ?? null);
+            };
+
+            // เรียกใช้งาน toChildren
+            if (Array.isArray(data.children) && data.children.length > 0) {
+                data.children.forEach((child, index) => {
+                    toChildren(`children[${index}]`, child);
+                });
+            }
+
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
+            }
+            const response = category !== null ? await updateCategory(formData) : await createCategory(formData);
+            toast(response);
+            await delay(1000);
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     return (
         <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                {fields.map((field, index) => (
-                    <div key={index} className='border border-dashed py-3 px-5  flex flex-col gap-3 rounded-sm '>
-                        <div className="flex flex-row w-full">
-                            <h1>Sub category#{index + 1}</h1>
-                            <X className="ml-auto" onClick={() => remove(index)} />
-                        </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
+                <div className="flex flex-col">
+                    <HeaderTitle title="Category create" />
+                    <div className='border border-dashed py-3 px-5  flex flex-col gap-3 rounded-sm '>
                         <div className="flex flex-col gap-2">
                             <div className='flex flex-col gap-3 max-w-[500px]'>
                                 <FormFieldCommon
-                                    label='Sub Category Name'
+                                    label='Category Name'
                                     control={methods.control}
-                                    name={`categories.${index}.name`}
+                                    name={`name`}
                                     placeholder='Name'
                                 />
                             </div>
@@ -69,7 +122,7 @@ const CategoryTreeForm = () => {
                                 <p className='text-sm mb-2'>image</p>
                                 <FormField
                                     control={methods.control}
-                                    name={`categories.${index}.imageUrl`}
+                                    name={`imageUrl`}
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormFileUpload
@@ -87,15 +140,65 @@ const CategoryTreeForm = () => {
                                 />
                             </div>
                         </div>
-
-                        {/* Recursive Category Input */}
-                        <CategoryFieldArray nestIndex={index.toString()} />
                     </div>
-                ))}
-                <button type="button" onClick={() => append({ children: [], parent: null, name: "", imageUrl: "", id: null })}>
-                    Add Category
-                </button>
-                <button type="submit">Submit</button>
+
+                    <Button className="mb-10 ml-auto" type="button" onClick={() => append({ children: [], parent: null, name: "", imageUrl: "", id: null })}>
+                        Add Category
+                    </Button>
+                    <div className="flex flex-col gap-4">
+                        {fields.map((_, index) => (
+                            <Accordion key={index} type="single" collapsible className="w-full hover:bg-background/30  cursor-pointer border border-gray-300 px-2 rounded-sm">
+                                <AccordionItem value={`categories.${index}`} className="cursor-pointer" >
+                                    <AccordionTrigger className="p-3 flex items-center cursor-pointer w-full">
+                                        <h1>Sub Category#{index + 1}</h1>
+                                        <X onClick={() => remove(index)} className="ml-auto" />
+                                    </AccordionTrigger>
+                                    <AccordionContent className="w-full">
+                                        <div className='border border-dashed py-3 px-5  flex flex-col gap-3 rounded-sm '>
+                                            <div className="flex flex-col gap-2">
+                                                <div className='flex flex-col gap-3 max-w-[500px]'>
+                                                    <FormFieldCommon
+                                                        label='Category Name'
+                                                        control={methods.control}
+                                                        name={`children.${index}.name` as keyof CategoryScheme}
+                                                        placeholder='Name'
+                                                    />
+                                                </div>
+
+                                                <div className='flex flex-col mx-0 gap-4'>
+                                                    <p className='text-sm mb-2'>image</p>
+                                                    <FormField
+                                                        control={methods.control}
+                                                        name={`children.${index}.imageUrl` as keyof CategoryScheme}
+                                                        render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormFileUpload
+                                                                    value={field.value as File}
+                                                                    onDelete={(id: string) => {
+                                                                        field.onChange("");
+                                                                    }}
+                                                                    onChange={(e: File) => {
+                                                                        return field.onChange(e);
+                                                                    }}
+                                                                />
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {/* Recursive Category Input */}
+                                        <CategoryFieldArray nestIndex={`children.${index}`} />
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        ))}
+                    </div>
+                </div>
+                <div className="flex">
+                    <Button className='ml-auto' disabled={false}>Submit</Button>
+                </div>
             </form>
         </FormProvider>
     );
