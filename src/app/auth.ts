@@ -1,4 +1,4 @@
-import { AuthOptions, getServerSession, User } from 'next-auth';
+import { AuthOptions, getServerSession, Session, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 import { JWT } from 'next-auth/jwt';
@@ -12,44 +12,54 @@ const authOptions: AuthOptions = ({
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
         session: async ({ session, token }) => {
-            const sanitizedToken = Object.keys(token).reduce((p, c) => {
-                if (
-                    c !== "lat" &&
-                    c !== "exp" &&
-                    c !== "jti" &&
-                    c !== "accessToken" &&
-                    c !== "refreshToken"
-                ) {
-                    return { ...p, [c]: token[c] };
-                } else {
-                    return p;
-                }
-            }, {});
-            return { ...session, error: token.error, expires: new Date(parseJwt(token.accessToken!).exp * 1000).toISOString(), ...sanitizedToken, accessToken: token.accessToken, refreshToken: token.refreshToken };
+            try {
+                const sanitizedToken = Object.keys(token).reduce((p, c) => {
+                    if (
+                        c !== "lat" &&
+                        c !== "exp" &&
+                        c !== "jti" &&
+                        c !== "accessToken" &&
+                        c !== "refreshToken"
+                    ) {
+                        return { ...p, [c]: token[c] };
+                    } else {
+                        return p;
+                    }
+                }, {});
+
+                return { ...session, error: token.error, expires: new Date(parseJwt(token.accessToken!).exp * 1000).toISOString(), ...sanitizedToken, accessToken: token.accessToken, refreshToken: token.refreshToken };
+            } catch (error) {
+                console.log(error);
+                return {} as Session;
+            }
         },
         jwt: async ({ token, user }: { token: JWT, user: User; }) => {
-            if (typeof user !== "undefined") {
-                const jwt = {
-                    ...user,
-                    accessToken: user.accessToken,
-                    refreshToken: user.refreshToken,
-                };
-                return jwt;
+            try {
+                if (typeof user !== "undefined") {
+                    const jwt = {
+                        ...user,
+                        accessToken: user.accessToken,
+                        refreshToken: user.refreshToken,
+                    };
+                    return jwt;
+                }
+                if (Date.now() / 1000 < Number(parseJwt(token.accessToken!).exp)) {
+                    return token;
+                } else if (Date.now() / 1000 < Number(parseJwt(token.refreshToken!).exp)) {
+                    return await refreshToken(token);
+                }
+                // accesstoken expired
+                return null;
+            } catch (error) {
+                throw error;
             }
-            if (Date.now() / 1000 < Number(parseJwt(token.accessToken!).exp)) {
-                return token;
-            } else if (Date.now() / 1000 < Number(parseJwt(token.refreshToken!).exp)) {
-                return await refreshToken(token);
-            }
-            // accesstoken expired
-            return null;
         }
     },
-    // session: {
-    //     strategy: "jwt",
-    //     maxAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
-    //     updateAge: Number(process.env.SESSION_TIMEOUT) ?? 900
-    // },
+    session: {
+        strategy: "jwt",
+        maxAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
+        updateAge: Number(process.env.SESSION_TIMEOUT) ?? 900
+    },
     providers: [
         CredentialsProvider({
             id: "spring-credential",
@@ -76,6 +86,7 @@ const authOptions: AuthOptions = ({
                         return null; // ผู้ใช้ไม่ถูกต้อง
                     }
                 } catch (error) {
+                    console.log
                     if (axios.isAxiosError(error)) {
                         throw new Error(error.response?.data?.message || error.message || "Internal Server Error");
                     } else {

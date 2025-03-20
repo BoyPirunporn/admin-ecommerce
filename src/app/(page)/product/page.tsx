@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 const RootPage = async () => {
     // const result = await getAllProduct(0, 10);
-    // await delay(1000)
+    await delay(1000)
     return <ProductClient products={[]} />
 }
 

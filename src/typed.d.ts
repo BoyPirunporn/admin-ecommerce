@@ -62,16 +62,17 @@ interface Option {
 
 
 interface Product {
-    id: number;
+    id: number | null;
     name: string;
     price: number;
-    description: string;
+    description: string | null;
     category: string;
-    mainImage: string;
-    productVariants: ProductVariant[];
+    mainImage: string | File;
+    productOptions: ProductOption[];
     createdAt: Date;
     updatedAt: Date;
 }
+
 
 interface Category {
     id: number;
@@ -84,11 +85,13 @@ interface Category {
 interface ProductOption {
     id: number;
     name: string;
+    enableImage: boolean;
     productOptionValues: ProductOptionValue[];
 }
 interface ProductOptionValue {
     id: number;
     value: string;
+    image: string | File;
 }
 
 interface Order {

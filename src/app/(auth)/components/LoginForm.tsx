@@ -2,13 +2,14 @@
 import { Button } from '@/components/ui/button';
 import { Form, FormMessage } from '@/components/ui/form';
 import { FormFieldCommon } from '@/components/ui/form-field-common';
-import { cn } from '@/lib/utils';
+import { cn, delay } from '@/lib/utils';
+import { useStoreLoading } from '@/stores/store-loading';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -27,7 +28,8 @@ const LoginForm = ({
 }: Props) => {
     const [error, setError] = useState<string | null>(null);
     const route = useRouter();
-
+    const [isPending, startTransition] = useTransition();
+    const setLoading = useStoreLoading((state) => state.setLoading);
     const form = useForm<LoginZod>({
         resolver: zodResolver(loginZod),
         defaultValues: {
@@ -43,11 +45,15 @@ const LoginForm = ({
                 password: data.password,
                 redirect: false, // ยืนยันว่ามี redirect: false,
             });
-            console.log({ response });
             // ตรวจสอบว่าการยืนยันตัวตนสำเร็จหรือไม่
             if (response?.ok) {
-                // ตัวอย่าง: redirect ไปหน้าอื่นถ้าจำเป็น
-                route.push('/');
+                setLoading(true)
+                startTransition(async () => {
+                    route.push("/");
+                    console.log("SUCCESS")
+                });
+                setLoading(false)
+
             }
             // จัดการข้อผิดพลาดและแสดง toast อย่างเหมาะสม
             if (response?.error) {

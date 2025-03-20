@@ -1,21 +1,19 @@
 'use client';
-import React, { useRef } from 'react';
+import React, { useRef, memo } from 'react';
 import Image from 'next/image';
 import { Plus, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
 
 interface FileUploadProps {
     value: File | string;
     onChange: (file: File) => void;
     onDelete?: (id: string) => void;
+    className?: string;
 }
-const FormFileUpload: React.FC<FileUploadProps> = ({
-    value,
-    onChange,
-    onDelete
-}) => {
+const FormFileUpload: React.FC<FileUploadProps> = memo(({ onChange, value, onDelete, className }) => {
     const fileRef = useRef<HTMLInputElement | null>(null);
     const handleMouseEvent = (e: React.MouseEvent<HTMLDivElement>) => {
         fileRef.current?.click();
@@ -46,7 +44,12 @@ const FormFileUpload: React.FC<FileUploadProps> = ({
 
     if (typeof window !== "undefined" && value instanceof File) {
         return (
-            <div className="relative w-[224px] h-[224px] flex flex-row justify-start gap-2">
+            <div className={
+                cn(
+                    "relative w-[224px] h-[224px] flex flex-row justify-start gap-2",
+                    className
+                )
+            }>
                 <Image
                     src={URL.createObjectURL(value)}
                     fill
@@ -54,7 +57,6 @@ const FormFileUpload: React.FC<FileUploadProps> = ({
                     alt={''} />
                 <div className="absolute top-2 right-2">
                     <Button
-                        className="w-10 h-10"
                         type="button"
                         onClick={() => onDelete?.("")}
                         variant={"destructive"}
@@ -68,15 +70,17 @@ const FormFileUpload: React.FC<FileUploadProps> = ({
     } else if (value && value.toString().length) {
         let url = process.env.NEXT_PUBLIC_DOMAIN_IMAGE + "/" + value;
         return (
-            <div className="relative w-[224px] h-[224px] flex flex-row justify-start gap-2">
+            <div className={cn(
+                "relative w-[224px] h-[224px] flex flex-row justify-start gap-2",
+                className
+            )}>
                 <Image
                     src={url}
                     fill
                     className='object-cover'
                     alt={''} />
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-0 right-0">
                     <Button
-                        className="w-10 h-10"
                         type="button"
                         onClick={() => deleteImage("")}
                         variant={"destructive"}
@@ -89,9 +93,14 @@ const FormFileUpload: React.FC<FileUploadProps> = ({
         );
     }
     return (
-        <div className="flex h-[248px] w-[280px] gap-1 border border-gray-300 rounded-lg border-dashed ">
+        <div className={
+            cn(
+                "flex h-[248px] w-[280px] gap-1 border border-gray-300 rounded-lg border-dashed cursor-pointer",
+                className
+            )
+        }>
             <div
-                className="flex gap-5 h-full flex-col w-full justify-center items-center p-5"
+                className="flex flex-col w-full justify-center items-center"
                 onDrop={handleDrop}
                 onDragOver={handleOnDragOver}
                 onClick={handleMouseEvent}
@@ -107,23 +116,15 @@ const FormFileUpload: React.FC<FileUploadProps> = ({
                     multiple={false}
                     type='file'
                 />
-                <p>Drag and drop the image to upload here or</p>
-                <Button
-                    className='rounded-lg'
-                    type='button'
-                    size={"sm"}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        fileRef.current?.click();
-                    }}
-                >
-                    <Plus />
-                    <span>Select Image</span>
-                </Button>
+                <Plus onClick={(e) => {
+                    e.stopPropagation();
+                    fileRef.current?.click();
+                }} />
+
                 <div />
             </div>
         </div>
     );
-};
+});
 
 export default FormFileUpload;

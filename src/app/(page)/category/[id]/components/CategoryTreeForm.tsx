@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { delay } from "@/lib/utils";
 import { createCategory, updateCategory } from "@/server-action/category.service";
 import { Category } from "@/typed";
+import HeaderTitle from "@/components/ui/header-title";
 
 
 const baseCategorySchema = z.object({
@@ -56,10 +57,15 @@ const CategoryTreeForm = ({
         console.log("Submitted Data:", data);
         try {
             const formData = new FormData();
-            formData.append("id", data.id?.toString()! ?? null);
+            if (data.id) {
+                formData.append("id", data.id.toString());
+            }
             formData.append("name", data.name);
             formData.append("imageUrl", data.imageUrl);
-            formData.append("parentId", data.parent?.id?.toString()! ?? null)
+            if (data.parent && data.parent.id) {
+                formData.append("parentId", data.parent.id.toString())
+
+            }
 
             // ฟังก์ชันที่ถูกต้อง
             const toChildren = (nestId: string, child: CategoryScheme) => {
@@ -68,8 +74,12 @@ const CategoryTreeForm = ({
                         toChildren(`${nestId}.children[${index}]`, chi);
                     });
                 }
-                formData.append(`${nestId}.id`, child.id?.toString()! ?? null);
-                formData.append(`${nestId}.parentId`, child.parent?.id?.toString()! ?? null);
+                if (child.id) {
+                    formData.append(`${nestId}.id`, child.id.toString());
+                }
+                if (child.parent && child.parent.id) {
+                    formData.append("parentId", child.parent.id.toString())
+                }
                 formData.append(`${nestId}.name`, child.name);
                 formData.append(`${nestId}.imageUrl`, child.imageUrl ?? null);
             };
@@ -96,6 +106,7 @@ const CategoryTreeForm = ({
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
                 <div className="flex flex-col">
+                    <HeaderTitle title="Category create" />
                     <div className='border border-dashed py-3 px-5  flex flex-col gap-3 rounded-sm '>
                         <div className="flex flex-col gap-2">
                             <div className='flex flex-col gap-3 max-w-[500px]'>
