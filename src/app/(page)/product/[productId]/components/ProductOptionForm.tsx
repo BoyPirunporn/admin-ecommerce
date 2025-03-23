@@ -56,7 +56,7 @@ const ProductOptionForm = ({
                 <div className="flex flex-row justify-between items-center">
                     <h1 className='text-lg'>Option Value</h1>
                     <Button variant={"outline"} type='button' onClick={() => append({ id: null, value: "", image: "" })} >
-                        <Plus className='text-black' size={20} />
+                        <Plus className='text-black dark:text-white' size={20} />
                     </Button>
                 </div>
                 <div className='flex flex-col gap-10'>

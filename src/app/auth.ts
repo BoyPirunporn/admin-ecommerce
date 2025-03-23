@@ -13,6 +13,7 @@ const authOptions: AuthOptions = ({
     callbacks: {
         session: async ({ session, token }) => {
             try {
+                if (!token || typeof token !== "object") return {} as Session;
                 const sanitizedToken = Object.keys(token).reduce((p, c) => {
                     if (
                         c !== "lat" &&
@@ -33,32 +34,35 @@ const authOptions: AuthOptions = ({
                 return {} as Session;
             }
         },
-        jwt: async ({ token, user }: { token: JWT, user: User; }) => {
+        jwt: async ({ token, user }) => {
             try {
-                if (typeof user !== "undefined") {
-                    const jwt = {
+                if (user) {
+                    return {
                         ...user,
-                        accessToken: user.accessToken,
-                        refreshToken: user.refreshToken,
+                        accessToken: user.accessToken || "",
+                        refreshToken: user.refreshToken || "",
                     };
-                    return jwt;
                 }
-                if (Date.now() / 1000 < Number(parseJwt(token.accessToken!).exp)) {
+                if (token && token.accessToken && Date.now() / 1000 < parseJwt(token.accessToken).exp) {
                     return token;
-                } else if (Date.now() / 1000 < Number(parseJwt(token.refreshToken!).exp)) {
+                } else if (token && token.refreshToken && Date.now() / 1000 < parseJwt(token.refreshToken).exp) {
                     return await refreshToken(token);
                 }
-                // accesstoken expired
-                return null;
+                return {}; // Always return an object, never null
             } catch (error) {
-                throw error;
+                console.error("[JWT Callback Error]:", error);
+                return {}; // Return empty object instead of null
             }
-        }
+        },
+        
     },
     session: {
         strategy: "jwt",
         maxAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
-        updateAge: Number(process.env.SESSION_TIMEOUT) ?? 900
+        updateAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
+    },
+    jwt: {
+
     },
     providers: [
         CredentialsProvider({
@@ -86,7 +90,7 @@ const authOptions: AuthOptions = ({
                         return null; // ผู้ใช้ไม่ถูกต้อง
                     }
                 } catch (error) {
-                    console.log
+                    console.log;
                     if (axios.isAxiosError(error)) {
                         throw new Error(error.response?.data?.message || error.message || "Internal Server Error");
                     } else {

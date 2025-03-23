@@ -15,13 +15,14 @@
   --font-poppins: var(--font-poppins)
 }
 
-@layer utilities {
+@layer base {
   input:-webkit-autofill {
-    background-color: transparent !important;
-    color: inherit !important;
-    box-shadow: 0 0 0px 1000px white inset !important;
+    background-color: white;
+    /* color: var(--foreground); */
+    /* box-shadow: none */
   }
 }
+
 
 @utility container {
   margin-inline: auto;
@@ -29,6 +30,11 @@
 
   @media (width >=--theme(--breakpoint-xs)) {
     max-width: none;
+  }
+
+  @media (width >=374px) {
+    max-width: 374px;
+    padding-inline: 1.5rem;
   }
 
   @media (width >=540px) {
@@ -172,6 +178,8 @@
   --sidebar-ring: oklch(0.446 0.043 257.281);
 }
 
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -182,12 +190,6 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
+.dark {
+  @apply transition-colors duration-500 ease-in-out;
 }

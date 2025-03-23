@@ -136,3 +136,14 @@ interface Payment {
     paymentMethod: PaymentMethod;
     payStatus: PayStatus;
 }
+
+
+interface Dashboard {
+   monthlyRevenues: {
+        date:Date;
+        totalRevenue:number;
+   }[];
+   subscriptions:number;
+   sales:number;
+   totalRevenues:number;
+}

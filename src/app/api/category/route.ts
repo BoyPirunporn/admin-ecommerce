@@ -1,4 +1,4 @@
-import { CATEGORY } from "@/constants";
+import { API_CATEGORY } from "@/constants";
 import { axiosServer } from "@/lib/axios-server";
 import { Category, ResponseWithDataTable } from "@/typed";
 import { NextRequest, NextResponse } from "next/server";
@@ -7,7 +7,7 @@ export const GET = async (request: NextRequest) => {
     try {
         const page = Number(request.nextUrl.searchParams.get("page") ?? 0);
         const size = Number(request.nextUrl.searchParams.get("size") ?? 10);
-        const response = await axiosServer.get<ResponseWithDataTable<Category>>(CATEGORY, {
+        const response = await axiosServer.get<ResponseWithDataTable<Category>>(API_CATEGORY, {
             params: {
                 page: page,
                 size: size

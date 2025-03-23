@@ -1,12 +1,12 @@
 'use server';
 
-import { PRODUCT_OPTION } from "@/constants";
+import { API_PRODUCT_OPTION } from "@/constants";
 import { axiosServer } from "@/lib/axios-server";
 import { ProductOption, ResponseWithPayload, ResponseMessage } from "@/typed";
 
 export const getProductOptionById = async (id: number): Promise<ProductOption | undefined> => {
     try {
-        const result = await axiosServer.get<ResponseWithPayload<ProductOption>>(PRODUCT_OPTION + `/${id}`);
+        const result = await axiosServer.get<ResponseWithPayload<ProductOption>>(API_PRODUCT_OPTION + `/${id}`);
         console.log(result.data.payload);
         return result.data.payload;
     } catch (error) {
@@ -17,7 +17,7 @@ export const getProductOptionById = async (id: number): Promise<ProductOption | 
 
 export const getAllProductOption = async (): Promise<ProductOption[]> => {
     try {
-        const response = await axiosServer.get<ResponseWithPayload<ProductOption[]>>(`${PRODUCT_OPTION}?page=0&size=10`);
+        const response = await axiosServer.get<ResponseWithPayload<ProductOption[]>>(`${API_PRODUCT_OPTION}?page=0&size=10`);
         return response.data.payload;
     } catch (error) {
         console.log(error);
@@ -27,6 +27,6 @@ export const getAllProductOption = async (): Promise<ProductOption[]> => {
 
 
 export const createProductOption = async (data: ProductOption): Promise<string> => {
-    const response = await axiosServer.post<ResponseMessage>(PRODUCT_OPTION, data);
+    const response = await axiosServer.post<ResponseMessage>(API_PRODUCT_OPTION, data);
     return response.data.message;
 };

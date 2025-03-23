@@ -15,7 +15,7 @@ const OrderPaymentMethod = ({
             <Select
                 defaultValue={PaymentMethod[value]}
             >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select a Payment Method" />
                 </SelectTrigger>
                 <SelectContent>

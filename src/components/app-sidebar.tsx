@@ -25,9 +25,10 @@ import {
   AccordionTrigger
 } from "./ui/accordion"
 import { useIsMobile } from "@/hooks/use-mobile"
+import RenderSideBarItem from "./render-siderbar-item";
 
 
-interface NavBarProps {
+export interface NavBarProps {
   title: string;
   url?: string;
   items?: NavBarProps[]
@@ -55,10 +56,10 @@ const dataNav: AppSideBarProps = {
           title: "Product",
           url: "/product",
         },
-        {
-          title: "Product option",
-          url: "/product-option",
-        },
+        // {
+        //   title: "Product option",
+        //   url: "/product-option",
+        // },
         {
           title: "Order",
           url: "/order",
@@ -68,37 +69,7 @@ const dataNav: AppSideBarProps = {
   ],
 }
 
-const RenderSubMenu = ({ item }: { item: NavBarProps }) => {
-  const { toggleSidebar } = useSidebar();
-  const pathname = usePathname();
-  if (item.items && item.items.length) {
-    return (
-      <SidebarGroup key={item.title} className="pr-0 mr-0">
-        <Accordion key={item.title} type="single" collapsible >
-          <AccordionItem value={item.title}>
-            <AccordionTrigger>{item.title}</AccordionTrigger>
-            <AccordionContent>
-              <SidebarMenu>
-                {item.items.map((e, index) => <RenderSubMenu key={index} item={e} />)}
-              </SidebarMenu>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </SidebarGroup>
-    )
-  }
-  return (
-    <SidebarMenuItem >
-      <SidebarMenuButton asChild isActive={pathname === item.url} >
-        <Link href={item.url!} onClick={() => {
-          if (useIsMobile()) {
-            toggleSidebar()
-          }
-        }}>{item.title}</Link>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-  )
-}
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -114,7 +85,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarGroupContent>
               <SidebarMenu>
                 {item.items?.map((item, index) => (
-                  <RenderSubMenu key={index} item={item} />
+                  <RenderSideBarItem key={index} item={item} />
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>

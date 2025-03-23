@@ -15,7 +15,7 @@ const OrderStatusPage = ({
             <Select
                 defaultValue={OrderStatus[value]}
             >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger>
                     <SelectValue placeholder="Select a Payment Method" />
                 </SelectTrigger>
                 <SelectContent>

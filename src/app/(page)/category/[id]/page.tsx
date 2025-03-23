@@ -12,6 +12,8 @@ type Props = {
 const page = async (props: Props) => {
     const categoryId = (await props.params).id;
     const category = (categoryId !== "created") ? await getCategoryById(Number(categoryId)) : null;
+
+    console.log({category})
     return (
         <CategoryTreeForm category={category} />
     )

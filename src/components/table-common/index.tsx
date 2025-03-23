@@ -66,9 +66,7 @@ const DataTable = <T,>({
                                                     <TableHead key={header.id} style={{
                                                         width: `${header.getSize()}px`,
                                                         maxWidth: `${header.getSize()}px`,
-                                                        minWidth: `${header.getSize()}px`,
-
-
+                                                        // minWidth: `${header.getSize()}px`,
                                                     }} >
                                                         {header.isPlaceholder ? null : (
                                                             flexRender(

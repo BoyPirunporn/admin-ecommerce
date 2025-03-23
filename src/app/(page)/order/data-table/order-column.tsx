@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from '@/components/ui/checkbox';
 import { OrderStatus, PaymentMethod, PaymentStatus } from "@/enum";
-import { Order } from "@/typed";
+import { Order, ShippingAddress } from "@/typed";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -56,7 +56,7 @@ export const orderColumnDef: ColumnDef<Order>[] = [
   {
     accessorKey: "payment.paymentMethod",
     header: "Payment Method",
-    size:30,
+    size: 100,
     cell: (cell) => {
       return <OrderPaymentMethod value={cell.getValue() as PaymentMethod} />;
     }
@@ -64,7 +64,7 @@ export const orderColumnDef: ColumnDef<Order>[] = [
   {
     accessorKey: "payment.paymentStatus",
     header: "Payment Status",
-    size:30,
+    size: 100,
     cell: (cell) => {
       return <OrderPaymentStatus value={cell.getValue() as PaymentStatus} />;
     }
@@ -72,14 +72,20 @@ export const orderColumnDef: ColumnDef<Order>[] = [
   {
     accessorKey: "status",
     header: "Order Status",
-    size:30,
+    size: 100,
     cell: (cell) => {
       return <OrderStatusPage value={cell.getValue() as OrderStatus} />;
     }
   },
   {
-    accessorKey: "shippingAddress.addressLine1",
+    accessorKey: "shippingAddress",
     header: "Address",
+    size: 300,
+    cell: ({ getValue }) => {
+      const address: ShippingAddress = getValue() as ShippingAddress;
+      return address.addressLine1 + " " + address.city + " " + address.postalCode + " " + address.country;
+
+    }
   },
   {
     accessorKey: "id",

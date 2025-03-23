@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { Product, ProductVariant } from "@/typed";
+import { Product, ProductOption, ProductVariant } from "@/typed";
 
 
 
@@ -60,10 +60,10 @@ export const productColumnDef: ColumnDef<Product>[] = [
     header: "Product Price",
   },
   {
-    accessorKey: "productVariants",
-    header: "Product Variant",
+    accessorKey: "productOptions",
+    header: "Product Option",
     cell: (props) => {
-      return <p>{(props.getValue() as ProductVariant[]).map(e => e.sku).join(", ")}</p>;
+      return <p>{(props.getValue() as ProductOption[]).map(e => e.name).join(", ")}</p>;
     }
   },
   {

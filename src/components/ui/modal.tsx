@@ -35,19 +35,17 @@ const Modal: React.FC<ModalProps> = ({
         }
     };
     return (
-        <Dialog open={isOpen} onOpenChange={onChange}>
-            <div className="">
-                <DialogContent className={cn(
-                    className,
-                    "overflow-auto max-h-[calc(100%_-_64px)] max-w-md"
-                )}>
-                    <DialogHeader>
-                        <DialogTitle className="text-md">{title}</DialogTitle>
-                        <DialogDescription className="text-sm">{description}</DialogDescription>
-                    </DialogHeader>
-                    <div className="overflow-auto">{children}</div>
-                </DialogContent>
-            </div>
+        <Dialog open={isOpen} onOpenChange={onChange} >
+            <DialogContent className={cn(
+                className,
+                "overflow-auto max-h-[calc(100%_-_64px)] max-w-md"
+            )}>
+                <DialogHeader>
+                    <DialogTitle className="text-md">{title}</DialogTitle>
+                    <DialogDescription className="text-sm">{description}</DialogDescription>
+                </DialogHeader>
+                <div className="overflow-auto">{children}</div>
+            </DialogContent>
         </Dialog>
     );
 };

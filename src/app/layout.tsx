@@ -7,7 +7,6 @@ import { getSession } from "./auth";
 import AuthSessionProvider from "@/providers/auth-session-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/application-provider";
-import Navbar from "@/components/navbar";
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
@@ -27,9 +26,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getSession();
-
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="" >
       <body
         className={`${poppins.variable} antialiased`}
       >
@@ -38,13 +36,12 @@ export default async function RootLayout({
             attribute={"class"}
             defaultTheme={"dark"}
             enableSystem
-            disableTransitionOnChange
+            enableColorScheme
           >
-            <Navbar />
-            {children}
-            <Toaster />
-            <DialogProvider />
-            <AuthSessionProvider />
+              {children}
+              <Toaster />
+              <DialogProvider />
+              <AuthSessionProvider />
           </ThemeProvider>
         </AuthProvider>
       </body>

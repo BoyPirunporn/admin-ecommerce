@@ -1,7 +1,5 @@
-import { getAllProduct } from '@/server-action/product.service';
-import ProductClient from './components/ProductClient';
-import { delay } from '@/lib/utils';
 import { Metadata } from 'next';
+import ProductClient from './components/ProductClient';
 
 export const metadata: Metadata = {
     title: "Product Management",
@@ -9,7 +7,6 @@ export const metadata: Metadata = {
 };
 const RootPage = async () => {
     // const result = await getAllProduct(0, 10);
-    await delay(1000)
     return <ProductClient products={[]} />
 }
 
