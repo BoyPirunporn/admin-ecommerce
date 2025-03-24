@@ -16,6 +16,9 @@ import { Product, ProductOption, Category } from '@/typed';
 import ProductOptionForm from './ProductOptionForm';
 import { X } from 'lucide-react';
 import { createProduct, updateProduct } from '@/server-action/product.service';
+import { DropdownMenu, DropdownMenuContent } from '@/components/ui/dropdown-menu';
+import CategorySelector from './CategorySelector';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 
 export const productOptionValueZod = z.object({
@@ -156,11 +159,6 @@ const ProductFormClient = ({
         }
     };
 
-    const onHandleCallbackOption = (data: ProductOption) => {
-        storeModal.closeModal();
-        append(data);
-    };
-
     return (
         <div>
             <Form {...form}>
@@ -181,24 +179,8 @@ const ProductFormClient = ({
                                     render={({ field }) => {
                                         return (
                                             <FormItem>
-                                                <Select defaultValue={field.value} onValueChange={field.onChange}>
-                                                    <SelectTrigger className="w-full" >
-                                                        <SelectValue placeholder="Select a fruit" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectGroup>
-                                                            <SelectLabel>Category</SelectLabel>
-                                                            <EachElement
-                                                                of={categories}
-                                                                render={(item) => (
-                                                                    <SelectItem key={item.id} value={item.name}>{item.name}</SelectItem>
-                                                                )}
-                                                            />
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
+                                                <CategorySelector defaultValue={field.value} categories={categories} onChange={field.onChange} />
                                                 <FormMessage />
-
                                             </FormItem>
                                         );
                                     }} />
@@ -238,7 +220,7 @@ const ProductFormClient = ({
 
                         </div>
 
-                        <div className=" p-8 ">
+                        <div className=" p-8 max-w-[800px]">
                             <div className="border border-dashed flex flex-col gap-5 p-5 rounded-md">
                                 <div className="flex flex-row justify-between">
                                     <h1 className='text-xl md:text-2xl'>Product option</h1>
@@ -249,13 +231,12 @@ const ProductFormClient = ({
                                         productOptionValues: []
                                     })}>Add Option</Button>
                                 </div>
-                                <div className="flex flex-col gap-4">
-                                    {productOptionFields.map((_, index) => (
-                                        <div key={index} className='border border-dashed p-2 flex flex-col gap-2'>
-                                            <X onClick={() => remove(index)} className='ml-auto' />
-                                            <ProductOptionForm nestIndex={index} />
-                                        </div>
-                                    ))}
+                                <div className="flex flex-col gap-4 ">
+                                    {productOptionFields.map((_, index) => {
+                                        return (
+                                            <ProductOptionForm key={index} nestIndex={index} />
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </div>

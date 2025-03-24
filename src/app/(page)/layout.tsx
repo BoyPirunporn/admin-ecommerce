@@ -17,7 +17,8 @@ const layout = ({
             <SidebarProvider className="">
                 <AppSidebar className="" />
                 <SidebarInset className='relative'>
-                    <header className="fixed top-0 bg-background w-full z-10 flex h-16  items-center gap-2 border-b px-1">
+                    <header className="fixed top-0 bg-background w-full justify-between z-10 flex h-16  items-center gap-2 border-b px-3">
+                        <SidebarTrigger className='block md:hidden'/>
                         <SwitchThemeMode />
                     </header>
                     <main className="relative py-16 lg:gap-10 lg:py-16 px-5 ">

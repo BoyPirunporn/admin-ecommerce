@@ -1,4 +1,4 @@
-import { ORDER, } from "@/constants";
+import { API_ORDER, } from "@/constants";
 import { axiosServer } from "@/lib/axios-server";
 import { Order, ResponseWithDataTable } from "@/typed";
 import { NextRequest, NextResponse } from "next/server";
@@ -10,7 +10,7 @@ export const GET = async (request: NextRequest) => {
         const sort = request.nextUrl.searchParams.get("sort") ?? null;
         const orderBy = request.nextUrl.searchParams.get("orderBy") ?? null;
 
-        const response = await axiosServer.get<ResponseWithDataTable<Order>>(ORDER, {
+        const response = await axiosServer.get<ResponseWithDataTable<Order>>(API_ORDER, {
             params: {
                 page,
                 size,

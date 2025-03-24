@@ -4,6 +4,7 @@ import { useTheme } from 'next-themes';
 import Link from 'next/link'
 import React from 'react'
 import { Moon, Sun } from 'lucide-react';
+import { SidebarTrigger } from './ui/sidebar';
 
 
 const Navbar = () => {
@@ -15,9 +16,9 @@ const Navbar = () => {
     return (
         <nav className="border-grid sticky top-0 z-50 w-full items-center flex h-20 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex flex-row items-center container">
-                <Link href={"/"} className="text-xl md:text-2xl">
-                    Shop Admin Store
-                </Link>
+                <div className="block md:hidden">
+                    <SidebarTrigger />
+                </div>
                 <div className="ml-auto">
                     <button
                         onClick={toggleTheme}

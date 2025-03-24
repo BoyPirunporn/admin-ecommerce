@@ -1,15 +1,20 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { FormFieldCommon } from "@/components/ui/form-field-common";
+import useStoreModal from "@/stores/store-modal";
 import { X } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
+import { dialogDelete } from "./CategoryTreeForm";
+import { deleteCategoryById } from "@/server-action/category.service";
+import { delay } from "@/lib/utils";
 
 interface CategoryFormProps {
     nestIndex: string;
 }
 
 const CategoryFieldArray: React.FC<CategoryFormProps> = ({ nestIndex }) => {
-    const { control } = useFormContext();
+    const { openModal, closeModal } = useStoreModal();
+    const { control, ...props } = useFormContext();
     const { fields, append, remove } = useFieldArray({
         control,
         name: `${nestIndex}.children`,
@@ -21,6 +26,26 @@ const CategoryFieldArray: React.FC<CategoryFormProps> = ({ nestIndex }) => {
     // // disable ปุ่มเมื่อความลึกมากกว่า 3
     const isDisabled = depth >= 2;
 
+    const handleDelete = (index: number, id: number | null) => {
+        if (id) {
+            openModal("Are you sure to delete this category?", {
+                content: dialogDelete(async () => {
+                    try {
+                        await deleteCategoryById(id);
+                        await delay(1000);
+                        remove(index);
+                    } catch (error) {
+                        console.log(error);
+                    } finally {
+                        closeModal();
+                    }
+                })
+            });
+        } else {
+            remove(index);
+        }
+
+    };
     return (
         <div className="pl-5">
             <div className="border-l pl-2 border-dashed flex flex-col gap-2">
@@ -34,12 +59,13 @@ const CategoryFieldArray: React.FC<CategoryFormProps> = ({ nestIndex }) => {
                         </Button>
                     )}
                 {fields.map((field, index) => {
+                    const id = props.getValues(`${nestIndex}.children.${index}.id`) as number;
                     return (
                         <Accordion key={index} type="single" collapsible className="w-full hover:bg-background/30  cursor-pointer border border-gray-300 px-2 rounded-sm">
                             <AccordionItem value={`categories.${index}`} className="cursor-pointer" >
                                 <AccordionTrigger className="p-3 flex items-center cursor-pointer w-full">
                                     <h1>#{index + 1}</h1>
-                                    <X onClick={() => remove(index)} className="ml-auto" />
+                                    <X onClick={() => handleDelete(index, id)} className="ml-auto" />
                                 </AccordionTrigger>
                                 <AccordionContent className="w-full">
                                     <div key={field.id} className="mb-2 p-2 border border-dashed rounded-md">

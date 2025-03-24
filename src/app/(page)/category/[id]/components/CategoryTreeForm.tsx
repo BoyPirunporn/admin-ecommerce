@@ -40,7 +40,7 @@ const categoryZod: z.ZodType<CategoryScheme> = baseCategorySchema.extend({
     parent: z.lazy(() => categoryZod.nullable())
 });
 
-const dialogDelete = (callback: () => void) => {
+export const dialogDelete = (callback: () => void) => {
 
     return (
         <div className="flex flex-row gap-2 justify-center">
@@ -55,7 +55,7 @@ const CategoryTreeForm = ({
     category: Category | null;
 }) => {
 
-    console.log({category})
+    console.log({ category })
 
     const methods = useForm<CategoryScheme>({
         defaultValues: category || { id: null, parent: null, name: "", imageUrl: "", children: [] },
@@ -94,7 +94,10 @@ const CategoryTreeForm = ({
                 }
 
                 formData.append(`${nestId}.name`, child.name);
-                formData.append(`${nestId}.imageUrl`, child.imageUrl ?? child.parent?.imageUrl ?? null);
+                const image = child.imageUrl ?? null;
+                if (image) {
+                    formData.append(`${nestId}.imageUrl`, image);
+                }
             };
 
             // เรียกใช้งาน toChildren
@@ -104,9 +107,12 @@ const CategoryTreeForm = ({
                 });
             }
 
-            // for (let pair of formData.entries()) {
-            //     console.log(pair[0], pair[1]);
-            // }
+            for (let pair of formData.entries()) {
+                if (pair[1] === 'null') {
+                    console.log(pair[0], pair[1])
+                }
+                // console.log(pair[0], pair[1]);
+            }
             const response = category !== null ? await updateCategory(formData) : await createCategory(formData);
             toast(response);
             await delay(1000);

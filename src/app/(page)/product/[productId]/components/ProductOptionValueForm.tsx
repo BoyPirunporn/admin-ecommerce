@@ -16,17 +16,15 @@ const ProductOptionValueForm = ({
 }: Props) => {
     const { control, } = useFormContext<ProductScheme>();
     return (
-        <div className="flex flex-col gap-3  p-5 rounded-sm">
+        <div className="flex flex-col gap-3 ounded-sm">
             <div className='flex flex-col gap-10'>
                 <FormFieldCommon
-                    label='Option value'
                     name={`${nestIndexValue}.value`}
                     control={control}
                     placeholder='Option name'
                 />
                 {enableImage && (
                     <div className='flex flex-col mx-0 gap-4'>
-                        <p className='text-sm mb-2'>image</p>
                         <FormField
                             control={control}
                             name={`${nestIndexValue}.image`}

@@ -16,7 +16,6 @@ const AuthSessionProvider = () => {
     useEffect(() => {
         if (!session && !pathName.startsWith("/auth") && !isModalOpen) {
             setIsModalOpen(true);
-
             // เรียก signOut() ของ next-auth ก่อน
             signOut({ redirect: false }).then(() => {
                 storeModal.openModal("Session Expired", {
