@@ -61,9 +61,6 @@ const authOptions: AuthOptions = ({
         maxAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
         updateAge: Number(process.env.SESSION_TIMEOUT) ?? 900,
     },
-    jwt: {
-
-    },
     providers: [
         CredentialsProvider({
             id: "spring-credential",
